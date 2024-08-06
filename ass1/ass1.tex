@@ -18,6 +18,44 @@
 \begin{center}
   \textit{This question concerns deriving a FSA to recognise $L^*$, given a FSA to recognise $L$.}
 \end{center}
+Informally, we will construct a FSA recognising $L^*$ in the following way.\footnote{
+  This can be simplified through the use of empty ($\epsilon$) edges in the FSA.
+To avoid developing the theory of FSA+$\epsilon$ in this assignment, we will not
+do this here.
+}
+Assume we have a (not necessarily deterministic) FSA recognising $L$, defined by .
+We will perform the following transformations:
+
+\noindent First, we must introduce two semantics-preserving\footnote{
+  That is, the transformation does not change the language recognised by the FSA.
+} transformations on FSAs.
+These will be useful later.
+Assume we have a FSA given by $(Q, F, A, \tau, q_0)$ recognising a language $L$.
+\begin{itemize}
+  \item \textit{Unify accepting states:} It is possible to translate the FSA
+    % into a form with a single accepting state and no
+    into a semantically equivalent\footnote{recognising the same language} FSA
+    which has a single distinguished accepting state, and no outgoing edges from that accepting state.
+
+    This is done by introducing a new symbol $\bullet_+$ with
+    $\bullet_+ \notin Q$. We mark this as the only accepting state.
+    Finally, for all edges into a previously-accepting state, we
+    duplicate those to point into $\bullet_+$.
+
+    That is, the new equivalent FSA is
+    \begin{align*}
+      (Q \cup \{\bullet_+\}, \{\bullet_+\}, A, \tau', q_0)
+    \end{align*}
+    where
+    \begin{align*}
+      \tau' = \tau \cup \big\{(q, a, \bullet_+)
+      \mid \exists q_F \in F.~ (q,a,q_F) \in \tau\big\}.
+    \end{align*}
+
+
+
+
+\end{itemize}
 
 \section*{Question 2}
 \subsection*{Question 2(a)}
