@@ -1,3 +1,4 @@
+% vim: spelllang=en_au
 \documentclass[a4paper]{article}
 
 \usepackage{geometry}
@@ -18,45 +19,110 @@
 \begin{center}
   \textit{This question concerns deriving a FSA to recognise $L^*$, given a FSA to recognise $L$.}
 \end{center}
-Informally, we will construct a FSA recognising $L^*$ in the following way.\footnote{
-  This can be simplified through the use of empty ($\epsilon$) edges in the FSA.
-To avoid developing the theory of FSA+$\epsilon$ in this assignment, we will not
-do this here.
-}
-Assume we have a (not necessarily deterministic) FSA recognising $L$, defined by .
-We will perform the following transformations:
 
-\noindent First, we must introduce two semantics-preserving\footnote{
-  That is, the transformation does not change the language recognised by the FSA.
-} transformations on FSAs.
-These will be useful later.
+\noindent First, we must (and so, we will)
+introduce two language-preserving transformations on FSAs.
+% \footnote{
+%   That is, the transformation does not change the language recognised by the FSA.
+% } transformations on FSAs.
+% These will be useful later.
 Assume we have a FSA given by $(Q, F, A, \tau, q_0)$ recognising a language $L$.
+We introduce:
 \begin{itemize}
-  \item \textit{Unify accepting states:} It is possible to translate the FSA
+  \item \textit{Unify accepting states.} It is possible to translate the FSA
     % into a form with a single accepting state and no
-    into a semantically equivalent\footnote{recognising the same language} FSA
+    into an equivalent\footnote{recognising the same language} FSA
     which has a single distinguished accepting state, and no outgoing edges from that accepting state.
 
-    This is done by introducing a new symbol $\bullet_+$ with
-    $\bullet_+ \notin Q$. We mark this as the only accepting state.
-    Finally, for all edges into a previously-accepting state, we
-    duplicate those to point into $\bullet_+$.
+    This is done by introducing a new symbol $\bullet^+$ with
+    $\bullet^+ \notin Q$. We mark this as the only accepting state.
+    Finally, for all edges \textit{into} a previously-accepting state, we
+    duplicate those to point into $\bullet^+$.
 
     That is, the new equivalent FSA is
     \begin{align*}
-      (Q \cup \{\bullet_+\}, \{\bullet_+\}, A, \tau', q_0)
+      % (Q states, F final states, A alphabet, tau subset Q x A x Q, Q)
+      (Q \cup \{\bullet^+\}, \{\bullet^+\}, A, \tau', q_0)
+    % \end{align*}
+      \qquad\text{where}~
+    % \begin{align*}
+      \tau' = \tau \cup
+      \big\{(q, a, \bullet^+) \mid \exists q_F \in F.~ (q,a,q_F) \in \tau\big\}.
     \end{align*}
-    where
+    
+    To see that is is equivalent, note that we retain all previous states
+    and transition edges, so it behaves identically for transitions which are not terminating.
+    For edges handling the last character of a word and going into a
+    previously-accepting state, note that the newly-added edges,
+    $\tau' \setminus \tau$, will provide the option of moving to the accepting
+    $\bullet^+$ state.
+    $\bullet^+$ has no outgoing edges, and so will not accept more words than the original language.
+    This is, of course, not a deterministic FSA.
+
+  \item \textit{Distinct start state.}
+    We can also translate the FSA into a form with a distinguished start state
+    which is unreachable aside from the starting configuration.
+
+    We introduce $\bullet^-$ with $\bullet^- \notin Q$ and mark this as the initial state.
+    For all outgoing edges from the previous start state, we duplicate these onto $\bullet^-$. Importantly, we do not replicate incoming edges.
+
+    Therefore, the 5-tuple is
     \begin{align*}
-      \tau' = \tau \cup \big\{(q, a, \bullet_+)
-      \mid \exists q_F \in F.~ (q,a,q_F) \in \tau\big\}.
+      (Q \cup \{\bullet^-\}, F, A, \tau', \bullet^-)
+      \qquad\text{where}~
+      \tau' = \tau \cup 
+      \big\{(\bullet^-, a, q') \mid \exists q' \in Q.~ (q_0, a, q') \in \tau\big\}.
     \end{align*}
-
-
-
-
+    We can see that $\bullet^-$ acts ``{just like}'' the previous $q_0$ for its
+    start state behaviour, and the behaviour when $q_0$ is (potentially) revisited is retained by $q_0$ (since the transformation maintains $q_0 \in Q$).
+    Thus, we claim it recognises precisely the same language.
 \end{itemize}
 
+
+Now, we are ready to prove the main result.
+Suppose we have a FSA (not necessarily deterministic)
+recognising $L$.
+\begin{enumerate}
+  \item 
+Apply both the \textit{unify accepting states} and the \textit{distinct start state}
+transformations to this FSA (order doesn't matter).
+
+After this, we still have an automaton recognising $L$ but it has distinguished start and accepting states, namely $\bullet^-$ and $\bullet^+$.
+As such, all words begin at $\bullet^-$, never revisiting this state,
+and all accepted words finish at $\bullet^+$. 
+  \item 
+    Now for our next trick, we will
+    unify our two special states into one state, $\bullet^\pm$.
+    That is, we make the substitution of $\bullet^\pm$ in place of
+    both $\bullet^-$ and $\bullet^+$ within all components of the 5-tuple representation.
+
+    As some consequences of this, we have $\bullet^\pm$ being the unique initial and accepting state, and this state now has both incoming edges (from $\bullet^+$) and outgoing edges (from $\bullet^-$).
+
+  \item
+    We are done.
+
+\end{enumerate}
+
+To make gestures towards why, we consider the words accepted by this automaton.
+Since $\bullet^\pm$ is the only accepting state, all accepted words are obtained
+from this state.
+Moreover, this state may be visited repeatedly, but visits to $\bullet^\pm$
+must be interspersed with paths through (something equivalent to) the original $L$ machine, each consuming a word $w \in L$.
+
+As such, the language recognised by this new FSA is the union of words accepted on the $n$-th visit to $\bullet^\pm$, for all $n \in \mathbb N$. This is
+\begin{align*}
+  \bigcup_{n \in \mathbb N} \big\{ w_1\cdots{}w_n ~\big|~ w_i \in L \big\}
+\end{align*}
+which is the Kleene star of $L$.
+
+% Informally, we will construct a FSA recognising $L^*$ in the following way.\footnote{
+%   This can be simplified through the use of empty ($\epsilon$) edges in the FSA.
+% To avoid developing the theory of FSA+$\epsilon$ in this assignment, we will not
+% do this here.
+% }
+% Assume we have a (not necessarily deterministic) FSA recognising $L$, defined by .
+% We will perform the following transformations:
+%
 \section*{Question 2}
 \subsection*{Question 2(a)}
 \subsection*{Question 2(b)}
