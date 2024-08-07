@@ -5,6 +5,11 @@
 \usepackage{amsmath}
 \usepackage{enumerate}
 \usepackage{amssymb}
+\usepackage{hyperref}
+% \usepackage[symbol]{footmisc}
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+\usetikzlibrary{positioning,arrows.meta}
 
 \author{Kait Lam \\ \small \texttt{45294583}}
 \title{\textsc{Math3306} --- Assignment 1}
@@ -125,7 +130,81 @@ which is the Kleene star of $L$.
 %
 \section*{Question 2}
 \subsection*{Question 2(a)}
+\begin{center}
+  \textit{This question concerns a FSA given as a graph (not pictured).}
+\end{center}
+The 5-tuple of the FSA is $(Q, F, A, \tau, q_\text{initial})$
+where
+\renewcommand*{\thefootnote}{\text{note~}\arabic{footnote}}
+\begin{align*}
+  Q =~& \{q_0, q_1, q_2\}, & \text{(all states)}\\
+  F =~& \{q_1\}, & \text{(final states)} \\ 
+  A =~& \{\texttt 0, \texttt 1\},\,\footnotemark& \text{(alphabet)}& \\
+  \tau =~& \{(q_0,\texttt0,q_0), (q_0,\texttt1,q_1), (q_1,\texttt1,q_1),\\
+  ~&~\,(q_1,\texttt0,q_2), (q_2,\texttt1,q_2), (q_2,\texttt0,1_1)\},\text{ and} &\text{(transitions)}\\
+        q_{\text{initial}} =~& q_0. &\text{(initial state)}
+\end{align*}
+\renewcommand*{\thefootnote}{\arabic{footnote}}
+\footnotetext{or any superset thereof}
+This FSA recognises the language given by the regular expression
+(with spaces omitted),
+\begin{align*}
+  \texttt{(0)$^*$ 1 ( (1)$^*$ 0 (1)$^*$ 0 )$^*$}.
+  % (\texttt 0)^* \texttt 1 ( (\texttt 1)^* \texttt 0 (\texttt 1) ^* \texttt 0 )^*
+\end{align*}
+Since $x^*$ denotes zero or more repetitions of $x$,
+this is the language of binary strings that have an even number of \texttt 0's to the right of the leftmost \texttt 1 (noting that 0 is an even number). 
+
+
 \subsection*{Question 2(b)}
+\begin{center}
+  \textit{This asks for an FSA recognising words of $\{a,b\}$
+  that start and end with the same letter.}
+\end{center}
+The FSA is drawn in Figure~\ref{fig:2b}.
+This simply considers words beginning with $a$ and $b$ separately depending
+on their first character (with the note that empty words are not accepted).
+
+On each side, we accept and continue accepting as long as the starting character
+is seen. If the non-starting character is encountered, we reject until the starting
+character is seen again.
+Thus, we accept if and only if the word ends on a character matching the first letter. 
+
+\begin{figure}[h]
+  \begin{center}
+\begin{tikzpicture}[shorten >=1pt,node distance=2cm,on grid,auto] 
+   \node[state] (q0)   {$-$}; 
+   \node[state] (a1) [left=of q0] {$+$}; 
+   \node[state] (a2) [left=of a1] {}; 
+   \node[state] (b1) [right=of q0] {$+$}; 
+   \node[state] (b2) [right=of b1] {}; 
+   % \node[state,accepting](q_3) [below right=of q_1] {$q_3$};
+    \path[->] 
+      (q0) edge node [swap]{$a$} (a1)
+      (a1) edge[loop above] node {$a$} (a1)
+            edge[bend left] node {$b$} (a2)
+      (a2) edge[bend left] node {$a$} (a1)
+      edge[loop above] node {$b$} (a2)
+
+
+      (q0) edge node {$b$} (b1)
+      (b1) edge[loop above] node {$b$} (b1)
+            edge[bend left] node {$a$} (b2)
+      (b2) edge[bend left] node {$b$} (b1)
+      edge[loop above] node {$a$} (b2)
+
+    % (q_0) edge  node {0} (q_1)
+    %       edge  node [swap] {1} (q_2)
+    % (q_1) edge  node  {1} (q_3)
+    %       edge [loop above] node {0} ()
+    % (q_2) edge  node [swap] {0} (q_3) 
+    %       edge [loop below] node {1} ();
+      ;
+\end{tikzpicture}
+  \end{center}
+  \caption{A finite state automaton.}\label{fig:2b}
+\end{figure}
+
 \section*{Question 3}
 \section*{Question 4}
 \subsection*{Question 4(a)}
