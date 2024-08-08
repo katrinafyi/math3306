@@ -189,8 +189,8 @@ Thus, we accept if and only if the word ends on a character matching the first l
 
       (q0) edge node {$b$} (b1)
       (b1) edge[loop above] node {$b$} (b1)
-            edge[bend left] node {$a$} (b2)
-      (b2) edge[bend left] node {$b$} (b1)
+      edge[bend right] node [swap]{$a$} (b2)
+      (b2) edge[bend right] node [swap]{$b$} (b1)
       edge[loop above] node {$a$} (b2)
 
     % (q_0) edge  node {0} (q_1)
