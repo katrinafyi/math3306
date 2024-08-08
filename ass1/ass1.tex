@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{enumerate}
 \usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{hyperref}
 % \usepackage[symbol]{footmisc}
 \usepackage{tikz}
@@ -206,9 +207,65 @@ Thus, we accept if and only if the word ends on a character matching the first l
 \end{figure}
 
 \section*{Question 3}
+\begin{center}
+  \textit{
+    This question introduces the language $\big\{w\#w~\big|~w \in \{0,1\}^*\big\}$
+    and asks whether it is regular.
+  }
+\end{center}
+I think that it is not regular.
+
+The pumping lemma gives us that a necessary condition for $L$
+to be regular is: there exists $p_L \ge 1$ such that for every $w \in L$
+where $\ell(w) > p_L$, there exists $x,y,z$ such that $w = xyz$ and 
+(1) $\ell(y) \ge 1$, (2) $\ell(xy) \le p_L$, and (3) $xy^nz \in L$ for all $n \ge 0$.
+We will prove the negation of this necessary condition.
+%
+That is,
+for all $p_L \ge 1$,
+there exists $w \in L$ such that $\ell(w) > p_L$ and,
+for all decompositions,
+at least one of the three decomposition properties
+is violated.
+This will show non-regularity by contraposition.
+
+\begin{proof}[Proof \textrm{(Refutation of the necessary cond.)}.]
+Let $p_L$ be arbitrary but fixed.
+Choose $w = 0^{p_L}\#0^{p_L}$, noting that $w \in L$, and consider an arbitrary decomposition $w=xyz$.
+Without loss of generality, assume $\ell(y) \ge 1$ and $\ell(xy) \le p_L$ (otherwise, at least one property is contradicted and we would be done).
+% wlog, assume $\ell(xy) \le p_L$ (otherwise done).
+
+Now, we consider where the hash character might have fallen in this decomposition.
+If $y$ contains the hash, the final property is plainly false since words of $L$ have exactly one hash.
+If $x$ contains the hash, then there is a fixed number of zeros to the left of the hash within $x$.
+In this case, since $y$ is non-empty and to the right of the hash,
+it contains at least one zero, and repeating $y$ would produce a word not in
+$L$---negating the final property.
+A symmetric argument holds for the $z$ case, and
+% Therefore,
+we find that the final property is unsatisfiable in the presence of the first two properties.
+This is enough.
+\end{proof}
+
+\noindent And so it is shown.
+
+
+
+
 \section*{Question 4}
 \subsection*{Question 4(a)}
+\begin{center}
+  \textit{
+    This question wants to know the language recognised by a given Turing machine.
+  }
+\end{center}
+
 \subsection*{Question 4(b)}
+\begin{center}
+  \textit{
+    This question requests a Turing machine to recognise the language of Question 3.
+  }
+\end{center}
 
 \end{document}
 
