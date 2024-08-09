@@ -7,6 +7,7 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{hyperref}
+\usepackage{minted}
 % \usepackage[symbol]{footmisc}
 \usepackage{tikz}
 \usetikzlibrary{automata,positioning}
@@ -251,7 +252,7 @@ This is enough.
 
 
 
-
+\newpage
 \section*{Question 4}
 \subsection*{Question 4(a)}
 \begin{center}
@@ -259,6 +260,71 @@ This is enough.
     This question wants to know the language recognised by a given Turing machine.
   }
 \end{center}
+Notice that the Turing machine has only edges of the form $x/x/R$,
+meaning the tape is never changed and the head is only moved right.
+Since this machine never modifies memory and only scans the string once,
+it acts just like a finite state automaton---specifically,
+the FSA of Figure~\ref{fig:4a}.
+This is mostly straightforward, with most edges being replaced with
+with FSA edges of their recognised character.
+Note that edges of the form $\emptyset/\emptyset/R$
+instead cause their source states to be marked as accepting states.
+
+This makes it easier to infer the language (which is regular).
+As a regular expression, this is
+\begin{align*}
+  \texttt{1$^*$ 0$^+$ 1$^+$ 0$^*$ ( 0 1$^+$ 0$^+$ 1$^+$ 0$^*$ )$^*$}.
+  % (\texttt 0)^* \texttt 1 ( (\texttt 1)^* \texttt 0 (\texttt 1) ^* \texttt 0 )^*
+\end{align*}
+This language contains a number of repeating ``runs'' of 
+\texttt{0}'s and \texttt{1}'s (a run is a contiguous block of one character).
+Specifically, this language is the language of binary strings such that
+after the first zero, they contain an \textit{odd} number of \texttt 1 runs.
+There may or may not be a run of \texttt 1's before the first zero,
+and there may or may not be a run of \texttt 0's after the last one.
+
+By noticing the repetition in the above regular expression, this can also be seen as
+\begin{align*}
+  A\texttt{ ( 01 $A$ )}^*
+  \textrm{\quad{}where\quad{}}A = \texttt{( 1$^*$ 0$^+$ 1$^+$ 0$^*$ )}.
+  % (\texttt 0)^* \texttt 1 ( (\texttt 1)^* \texttt 0 (\texttt 1) ^* \texttt 0 )^*
+\end{align*}
+That is, a sequence of one or more \texttt{01}-separated
+words in $A$, where $A$ is made up of
+words containing a core of a \texttt 0 run then a \texttt 1 run, possibly prefixed by a \texttt 1 run or suffixed by a \texttt 0 run.
+
+
+\begin{figure}
+  \begin{center}
+\begin{tikzpicture}[shorten >=1pt,node distance=2cm,on grid,auto] 
+   \node[state] (q0)   {$-$}; 
+   \node[state] (q1) [below=of q0] {}; 
+   \node[state] (q2) [right=of q1] {$+$}; 
+   \node[state] (q3) [above=of q2] {$+$}; 
+    \path[->] 
+    (q0) edge [loop above] node {1} (q0)
+    (q0) edge node [swap]{0} (q1)
+    (q1) edge [loop below] node {0} (q1)
+    (q1) edge  node[swap] {1} (q2)
+    (q2) edge  [loop below] node {1} (q2)
+    (q2) edge   node[swap] {0} (q3)
+    (q3) edge [loop above] node {0} (q3)
+    (q3) edge  node[swap] {1} (q0)
+
+    % (q_0) edge  node {0} (q_1)
+    %       edge  node [swap] {1} (q_2)
+    % (q_1) edge  node  {1} (q_3)
+    %       edge [loop above] node {0} ()
+    % (q_2) edge  node [swap] {0} (q_3) 
+    %       edge [loop below] node {1} ();
+      ;
+\end{tikzpicture}
+
+  \end{center}
+  \caption{A finite state automaton.}\label{fig:4a}
+\end{figure}
+
+
 
 \subsection*{Question 4(b)}
 \begin{center}
@@ -266,6 +332,34 @@ This is enough.
     This question requests a Turing machine to recognise the language of Question 3.
   }
 \end{center}
+
+\newpage
+\begin{minted}[escapeinside=@@]{python}
+def main():
+  if tape('#', None, R):
+    assert tape(None, None, R), "spurious chars after #"
+
+  elif tape(0, None, R):
+    while True:
+      if tape('#', '#', R): break
+      elif tape(0, 0, R) or tape(1, 1, R): continue
+      else: raise RuntimeError("missing # symbol?")
+
+    assert tape(0, None, R)
+
+def shift_left():
+  while True:
+    if tape(None, None, L): break
+    elif tape(0, 0, R) or tape(1, 1, R): continue
+    else: raise RuntimeError("unexpected char when scanning right")
+
+  c = None
+  while True:
+    if tape('#', '#', L): break
+    elif tape(0, c, L): c = 0
+    elif tape(1, c, L): c = 0
+  
+\end{minted}
 
 \end{document}
 
