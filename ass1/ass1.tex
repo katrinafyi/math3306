@@ -332,34 +332,86 @@ words containing a core of a \texttt 0 run then a \texttt 1 run, possibly prefix
     This question requests a Turing machine to recognise the language of Question 3.
   }
 \end{center}
+\begin{figure}
 
-\newpage
-\begin{minted}[escapeinside=@@]{python}
-def main():
-  if tape('#', None, R):
-    assert tape(None, None, R), "spurious chars after #"
+\begin{minted}[escapeinside=@@,frame=single,framesep=8pt]{python}
+def left_until[Marker]():
+  """ output with Marker=0: (0) A B C D ... """
+  while True:
+    if tape(Marker, Marker, R): break
+    elif tape(0, 0, L) or tape(1, 1, L): continue
+  assert tape(_, _, L)  # unconditionally move left
+  return
 
-  elif tape(0, None, R):
-    while True:
-      if tape('#', '#', R): break
-      elif tape(0, 0, R) or tape(1, 1, R): continue
-      else: raise RuntimeError("missing # symbol?")
-
-    assert tape(0, None, R)
+def right_until[Marker]():
+  """ output with Marker=0: ... A B C D (0) """
+  while True:
+    if tape(Marker, Marker, L): break
+    elif tape(0, 0, R) or tape(1, 1, R): continue
+  assert tape(_, _, R)
+  return
 
 def shift_left():
-  while True:
-    if tape(None, None, L): break
-    elif tape(0, 0, R) or tape(1, 1, R): continue
-    else: raise RuntimeError("unexpected char when scanning right")
+  """
+  input:   X  0 (A) B  A  B  0
+  output: (X) A  B  A  B  0  0
+  """
+  right_until[None]()
+  assert tape(None, None, L)
 
-  c = None
-  while True:
-    if tape('#', '#', L): break
-    elif tape(0, c, L): c = 0
-    elif tape(1, c, L): c = 0
-  
+  def shl_1():
+    if tape(1, 1, L): shl_1()
+    elif tape(0, 1, L): shl_0()
+    elif tape(None, 1, L): return
+  def shl_0():
+    if tape(1, 0, L): shl_1()
+    elif tape(0, 0, L): shl_0()
+    elif tape(None, 0, L): return
+
+  if tape(0, None, L): shl_0()
+  elif tape(1, None, L): shl_1()
+  elif tape(None, None, L): pass
+
+  return
 \end{minted}
+  \caption{Helper functions for a Turing machine.}\label{fig:tm1}
+\end{figure}
+
+
+\begin{figure}
+
+  \begin{minted}[frame=single,framesep=8pt]{python}
+def main():
+  while True:
+    if tape('#', '#', R):
+      assert tape(None, None, R), "spurious chars after #"
+      accept()
+
+    elif tape(0, None, R):
+      right_until['#']()
+      assert tape('#', '#', R)
+
+      # now pointing immediately right of #
+      assert tape(0, None, R)
+
+      # pointing at head of tail
+      # 0 (A) B A B 0
+      shift_left()
+
+      assert tape('#', '#', L)
+    elif tape(1, None, R):
+      right_until['#']()
+      assert tape('#', '#', R)
+      assert tape(1, None, R)
+      shift_left()
+      assert tape('#', '#', L)
+
+    left_until[None]()
+    assert tape(None, None, R)
+\end{minted}
+
+  \caption{Main functionality of Turing machine.}\label{fig:tm2}
+\end{figure}
 
 \end{document}
 
