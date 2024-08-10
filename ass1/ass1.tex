@@ -8,10 +8,12 @@
 \usepackage{amsthm}
 \usepackage{hyperref}
 \usepackage{minted}
+\usepackage{enumitem}
 % \usepackage[symbol]{footmisc}
 \usepackage{tikz}
-\usetikzlibrary{automata,positioning}
-\usetikzlibrary{positioning,arrows.meta}
+\usetikzlibrary{automata}
+\usetikzlibrary{positioning,arrows.meta,calc}
+\usetikzlibrary{angles,intersections,quotes,arrows.meta}
 
 \author{Kait Lam \\ \small \texttt{45294583}}
 \title{\textsc{Math3306} --- Assignment 1}
@@ -325,40 +327,56 @@ words containing a core of a \texttt 0 run then a \texttt 1 run, possibly prefix
 \end{figure}
 
 
-
+\newpage
 \subsection*{Question 4(b)}
 \begin{center}
   \textit{
     This question requests a Turing machine to recognise the language of Question 3.
   }
 \end{center}
+This will be done with the help of some basic Turing machine primitives to manipulate the tape. These are given (in pseudocode)
+in Figure~\ref{fig:tm1}, and the main procedure is in Figure~\ref{fig:tm2}.
+Initially, the head points to the leftmost character of the candidate string.
+The algorithm then proceeds recursively, checking one character at a time:
+\begin{enumerate}[label=(\arabic*),noitemsep]
+  \item If the head character is a \texttt{\#}, ensure the string is precisely `\texttt{\#}'---if so, accept, else reject.
+  \item If the head character is a \texttt{0} or \texttt 1, record this character as $c$, clear the tape position, then:
+    \begin{enumerate}[noitemsep]
+      \item Scan right until \texttt{\#}, then ensure the character right of \texttt{\#} matches $c$.
+      \item Shuffle remaining string one position to the left,
+        overwriting the just-checked character.
+      \item Scan far left until the beginning of the string is reached,
+        recalling that the original leftmost character was deleted
+        so our string has become shorter.
+      \item Repeat from (1).
+    \end{enumerate}
+\end{enumerate}
+The Turing machine is depicted in Figure~\ref{fig:tm}.
+This is a fairly faithful translation of the pseudocode.
+Note that each \texttt{left\_until}/\texttt{right\_until} call appears as a single looping state (marked with $\leftarrow$/$\rightarrow$),
+and the \texttt{shift\_left} routine's states are marked by $\ll$.
+
 \begin{figure}
 
-\begin{minted}[escapeinside=@@,frame=single,framesep=8pt]{python}
+\begin{minted}[escapeinside=@@,frame=single,framesep=8pt,fontsize=\footnotesize]{python}
 def left_until[Marker]():
   """ output with Marker=0: (0) A B C D ... """
   while True:
     if tape(Marker, Marker, R): break
     elif tape(0, 0, L) or tape(1, 1, L): continue
   assert tape(_, _, L)  # unconditionally move left
-  return
-
 def right_until[Marker]():
   """ output with Marker=0: ... A B C D (0) """
   while True:
     if tape(Marker, Marker, L): break
     elif tape(0, 0, R) or tape(1, 1, R): continue
   assert tape(_, _, R)
-  return
 
 def shift_left():
   """
-  input:   X  0 (A) B  A  B  0
+  input:   X  0  A  B  A (B) 0
   output: (X) A  B  A  B  0  0
   """
-  right_until[None]()
-  assert tape(None, None, L)
-
   def shl_1():
     if tape(1, 1, L): shl_1()
     elif tape(0, 1, L): shl_0()
@@ -370,9 +388,7 @@ def shift_left():
 
   if tape(0, None, L): shl_0()
   elif tape(1, None, L): shl_1()
-  elif tape(None, None, L): pass
-
-  return
+  elif tape(None, None, L): return
 \end{minted}
   \caption{Helper functions for a Turing machine.}\label{fig:tm1}
 \end{figure}
@@ -380,7 +396,7 @@ def shift_left():
 
 \begin{figure}
 
-  \begin{minted}[frame=single,framesep=8pt]{python}
+  \begin{minted}[frame=single,framesep=8pt,fontsize=\footnotesize]{python}
 def main():
   while True:
     if tape('#', '#', R):
@@ -390,27 +406,115 @@ def main():
     elif tape(0, None, R):
       right_until['#']()
       assert tape('#', '#', R)
-
-      # now pointing immediately right of #
       assert tape(0, None, R)
-
-      # pointing at head of tail
-      # 0 (A) B A B 0
-      shift_left()
-
-      assert tape('#', '#', L)
     elif tape(1, None, R):
       right_until['#']()
       assert tape('#', '#', R)
       assert tape(1, None, R)
-      shift_left()
-      assert tape('#', '#', L)
+
+    # now, pointing at head of tail: 0 (A) B A B 0
+    right_until[None]()
+    assert tape(None, None, L)
+
+    # shuffle string after '#' to the left by one position
+    shift_left()
+    assert tape('#', '#', L)
 
     left_until[None]()
     assert tape(None, None, R)
 \end{minted}
 
   \caption{Main functionality of Turing machine.}\label{fig:tm2}
+\end{figure}
+
+\begin{figure}
+  \begin{center}
+\begin{tikzpicture}[shorten >=1pt,node distance=2.2cm,on grid,auto] 
+
+  \tikzset{
+    rc/.style={rounded corners=2mm},
+  }
+
+   \node[state] (q0)   {$-$}; 
+   \node[state] (qhash1) [above right=of q0] {}; 
+   \path[->] (q0) edge node [swap]{$\#/\#/R$} (qhash1);
+   \node[state] (qhash2) [right=of qhash1] {$+$};
+   \path[->] (qhash1) edge node {$\emptyset/\emptyset/R$} (qhash2);
+
+   % ZEROS
+
+   \node[state] (qzero1) [below left=of q0]{$\rightarrow$};
+   \path[->] (q0) edge node [swap]{$0/\emptyset/R$} (qzero1);
+   \path[->] (qzero1) edge [loop left] node {$[01]/[01]/R$} (qzero1);
+
+
+   \node[state] (qzerocheck) [below =of qzero1]{};
+   \path[->] (qzero1) edge  node [swap]{$\#/\#/R$} (qzerocheck);
+
+   \node[state] (scanright) [below right=of qzerocheck] {$\rightarrow$};
+   \path[->] (qzerocheck) edge node [swap]{$0/\emptyset/R$} (scanright);
+
+   \path[->] (scanright) edge [loop right] node [yshift=-0.2cm]{$[01]/[01]/R$} (scanright);
+
+   \node[state] (beginshift) [below =of scanright] {$\ll$};
+   \path[->] (scanright) edge node [swap]{$\emptyset/\emptyset/L$} (beginshift);
+
+   \node[state] (ones) [below right=3cm of beginshift] {$\ll$};
+   \path[->] (beginshift) edge node {$1/\emptyset/L$} (ones);
+   \node[state] (zeros) [below left=3cm of beginshift] {$\ll$};
+   \path[->] (beginshift) edge node [swap]{$0/\emptyset/L$} (zeros);
+
+   \path[->] (ones) edge [bend left] node [swap]{$0/1/L$} (zeros);
+   \path[->] (ones) edge [loop right] node {$1/1/L$} (ones);
+   \path[->] (zeros) edge [bend left] node [swap]{$1/0/L$} (ones);
+   \path[->] (zeros) edge [loop left] node {$0/0/L$} (zeros);
+
+
+   \node[state] (endshift) [below right=3cm of zeros] {$\ll$};
+   \path[->] (zeros) edge  node [swap]{$\emptyset/0/L$} (endshift);
+   \path[->] (ones) edge  node {$\emptyset/1/L$} (endshift);
+   % \path[->] (beginshift) edge[bend left=4cm] node
+   % [swap]{$\emptyset/\emptyset/L$} (endshift);
+
+   \draw [->,rounded corners=2.15cm](beginshift) to
+   ($(beginshift)+(4.6, 0)$) to   node[xshift=0.1cm]{$\emptyset/\emptyset/L$}($(endshift)+(4.6,0)$) to  (endshift);
+
+   \node[state] (hashagain) [below=of endshift] {$\leftarrow$};
+   \path[->] (endshift) edge node [swap] {$\#/\#/L$} (hashagain);
+   \path[->] (hashagain) edge [loop right] node  {$[01]/[01]/L$} (hashagain);
+
+   % \node (leftmarker1) [left=3cm of hashagain,scale=0pt] {};
+   % \node (leftmarker2) [left=3cm of q0] {};
+   % \path[-] (hashagain) edge  node  {asdf} (leftmarker1);
+   % \path[-] (leftmarker1) edge node {} (leftmarker2);
+   \draw [->,rounded corners=1cm](hashagain) to
+   ($(hashagain)+(-5, 0)$) to   node[swap,xshift=0.1cm]{$\emptyset/\emptyset/R$}($(q0)+(-5,0)$) to  (q0);
+   % \path[->] (hashagain) edge [bend left=16cm] node {asd} (q0);
+
+
+
+
+   % ONES
+
+   \node[state] (qone1) [below right=of q0]{$\rightarrow$};
+   \path[->] (q0) edge node {$1/\emptyset/R$} (qone1);
+   \path[->] (qone1) edge [loop right] node {$[01]/[01]/R$} (qone1);
+   \node[state] (qonecheck) [below =of qone1]{};
+   \path[->] (qone1) edge  node {$\#/\#/R$} (qonecheck);
+   \path[->] (qonecheck) edge  node {$1/\emptyset/R$} (scanright);
+
+
+
+    % (q_0) edge  node {0} (q_1)
+    %       edge  node [swap] {1} (q_2)
+    % (q_1) edge  node  {1} (q_3)
+    %       edge [loop above] node {0} ()
+    % (q_2) edge  node [swap] {0} (q_3) 
+    %       edge [loop below] node {1} ();
+\end{tikzpicture}
+
+  \end{center}
+  \caption{A Turing machine.}\label{fig:tm}
 \end{figure}
 
 \end{document}
