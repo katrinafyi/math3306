@@ -331,9 +331,11 @@ words containing a core of a \texttt 0 run then a \texttt 1 run, possibly prefix
 \subsection*{Question 4(b)}
 \begin{center}
   \textit{
-    This question requests a Turing machine to recognise the language of Question 3.
+    This question asks  (boldly) for a Turing machine to recognise the language of Question 3.
   }
 \end{center}
+Recall that the language is
+$\{w\#w~|~w \in \{0,1\}^*\}$.
 This will be done with the help of some basic Turing machine primitives to manipulate the tape. These are given (in pseudocode)
 in Figure~\ref{fig:tm1}, and the main procedure is in Figure~\ref{fig:tm2}.
 Initially, the head points to the leftmost character of the candidate string.
@@ -394,7 +396,7 @@ def shift_left():
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[h]
 
   \begin{minted}[frame=single,framesep=8pt,fontsize=\footnotesize]{python}
 def main():
@@ -427,7 +429,7 @@ def main():
   \caption{Main functionality of Turing machine.}\label{fig:tm2}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
   \begin{center}
 \begin{tikzpicture}[shorten >=1pt,node distance=2.2cm,on grid,auto] 
 
@@ -516,6 +518,9 @@ def main():
   \end{center}
   \caption{A Turing machine.}\label{fig:tm}
 \end{figure}
+
+% \clearpage
+% Let's not do that again.
 
 \end{document}
 
