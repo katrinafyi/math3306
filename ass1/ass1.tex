@@ -16,8 +16,8 @@
 \usetikzlibrary{angles,intersections,quotes,arrows.meta}
 
 \author{Kait Lam \\ \small \texttt{45294583}}
-\title{\textsc{Math3306} --- Assignment 1}
-\date{Friday 16 August 2024}
+\title{\textsc{Math3306} --- Assignment 1 (Submission)}
+\date{16 August 2024}
 
 \begin{document}
 
@@ -262,14 +262,14 @@ This is enough.
     This question wants to know the language recognised by a given Turing machine.
   }
 \end{center}
-Notice that the Turing machine has only edges of the form $x/x/R$,
+Notice that the Turing machine has only edges of the form $x/x/\mathrm R$,
 meaning the tape is never changed and the head is only moved right.
 Since this machine never modifies memory and only scans the string once,
 it acts just like a finite state automaton---specifically,
 the FSA of Figure~\ref{fig:4a}.
 This is mostly straightforward, with most edges being replaced with
 with FSA edges of their recognised character.
-Note that edges of the form $\emptyset/\emptyset/R$
+Note that edges of the form $\emptyset/\emptyset/\mathrm R$
 instead cause their source states to be marked as accepting states.
 
 This makes it easier to infer the language (which is regular).
@@ -439,58 +439,58 @@ def main():
 
    \node[state] (q0)   {$-$}; 
    \node[state] (qhash1) [above right=of q0] {}; 
-   \path[->] (q0) edge node [swap]{$\#/\#/R$} (qhash1);
+   \path[->] (q0) edge node [swap]{$\#/\#/\mathrm R$} (qhash1);
    \node[state] (qhash2) [right=of qhash1] {$+$};
-   \path[->] (qhash1) edge node {$\emptyset/\emptyset/R$} (qhash2);
+   \path[->] (qhash1) edge node {$\emptyset/\emptyset/\mathrm R$} (qhash2);
 
    % ZEROS
 
    \node[state] (qzero1) [below left=of q0]{$\rightarrow$};
-   \path[->] (q0) edge node [swap]{$0/\emptyset/R$} (qzero1);
-   \path[->] (qzero1) edge [loop left] node {$[01]/[01]/R$} (qzero1);
+   \path[->] (q0) edge node [swap]{$0/\emptyset/\mathrm R$} (qzero1);
+   \path[->] (qzero1) edge [loop left] node {$[01]/[01]/\mathrm R$} (qzero1);
 
 
    \node[state] (qzerocheck) [below =of qzero1]{};
-   \path[->] (qzero1) edge  node [swap]{$\#/\#/R$} (qzerocheck);
+   \path[->] (qzero1) edge  node [swap]{$\#/\#/\mathrm R$} (qzerocheck);
 
    \node[state] (scanright) [below right=of qzerocheck] {$\rightarrow$};
-   \path[->] (qzerocheck) edge node [swap]{$0/\emptyset/R$} (scanright);
+   \path[->] (qzerocheck) edge node [swap]{$0/\emptyset/\mathrm R$} (scanright);
 
-   \path[->] (scanright) edge [loop right] node [yshift=-0.2cm]{$[01]/[01]/R$} (scanright);
+   \path[->] (scanright) edge [loop right] node [yshift=-0.2cm]{$[01]/[01]/\mathrm R$} (scanright);
 
    \node[state] (beginshift) [below =of scanright] {$\ll$};
-   \path[->] (scanright) edge node [swap]{$\emptyset/\emptyset/L$} (beginshift);
+   \path[->] (scanright) edge node [swap]{$\emptyset/\emptyset/\mathrm L$} (beginshift);
 
    \node[state] (ones) [below right=3cm of beginshift] {$\ll$};
-   \path[->] (beginshift) edge node {$1/\emptyset/L$} (ones);
+   \path[->] (beginshift) edge node {$1/\emptyset/\mathrm L$} (ones);
    \node[state] (zeros) [below left=3cm of beginshift] {$\ll$};
-   \path[->] (beginshift) edge node [swap]{$0/\emptyset/L$} (zeros);
+   \path[->] (beginshift) edge node [swap]{$0/\emptyset/\mathrm L$} (zeros);
 
-   \path[->] (ones) edge [bend left] node [swap]{$0/1/L$} (zeros);
-   \path[->] (ones) edge [loop right] node {$1/1/L$} (ones);
-   \path[->] (zeros) edge [bend left] node [swap]{$1/0/L$} (ones);
-   \path[->] (zeros) edge [loop left] node {$0/0/L$} (zeros);
+   \path[->] (ones) edge [bend left] node [swap]{$0/1/\mathrm L$} (zeros);
+   \path[->] (ones) edge [loop right] node {$1/1/\mathrm L$} (ones);
+   \path[->] (zeros) edge [bend left] node [swap]{$1/0/\mathrm L$} (ones);
+   \path[->] (zeros) edge [loop left] node {$0/0/\mathrm L$} (zeros);
 
 
    \node[state] (endshift) [below right=3cm of zeros] {$\ll$};
-   \path[->] (zeros) edge  node [swap]{$\emptyset/0/L$} (endshift);
-   \path[->] (ones) edge  node {$\emptyset/1/L$} (endshift);
+   \path[->] (zeros) edge  node [swap]{$\emptyset/0/\mathrm L$} (endshift);
+   \path[->] (ones) edge  node {$\emptyset/1/\mathrm L$} (endshift);
    % \path[->] (beginshift) edge[bend left=4cm] node
-   % [swap]{$\emptyset/\emptyset/L$} (endshift);
+   % [swap]{$\emptyset/\emptyset/\mathrm L$} (endshift);
 
    \draw [->,rounded corners=2.15cm](beginshift) to
-   ($(beginshift)+(4.6, 0)$) to   node[xshift=0.1cm]{$\emptyset/\emptyset/L$}($(endshift)+(4.6,0)$) to  (endshift);
+   ($(beginshift)+(4.6, 0)$) to   node[xshift=0.1cm]{$\emptyset/\emptyset/\mathrm L$}($(endshift)+(4.6,0)$) to  (endshift);
 
    \node[state] (hashagain) [below=of endshift] {$\leftarrow$};
-   \path[->] (endshift) edge node [swap] {$\#/\#/L$} (hashagain);
-   \path[->] (hashagain) edge [loop right] node  {$[01]/[01]/L$} (hashagain);
+   \path[->] (endshift) edge node [swap] {$\#/\#/\mathrm L$} (hashagain);
+   \path[->] (hashagain) edge [loop right] node  {$[01]/[01]/\mathrm L$} (hashagain);
 
    % \node (leftmarker1) [left=3cm of hashagain,scale=0pt] {};
    % \node (leftmarker2) [left=3cm of q0] {};
    % \path[-] (hashagain) edge  node  {asdf} (leftmarker1);
    % \path[-] (leftmarker1) edge node {} (leftmarker2);
    \draw [->,rounded corners=1cm](hashagain) to
-   ($(hashagain)+(-5, 0)$) to   node[swap,xshift=0.1cm]{$\emptyset/\emptyset/R$}($(q0)+(-5,0)$) to  (q0);
+   ($(hashagain)+(-5, 0)$) to   node[swap,xshift=0.1cm]{$\emptyset/\emptyset/\mathrm R$}($(q0)+(-5,0)$) to  (q0);
    % \path[->] (hashagain) edge [bend left=16cm] node {asd} (q0);
 
 
@@ -499,11 +499,18 @@ def main():
    % ONES
 
    \node[state] (qone1) [below right=of q0]{$\rightarrow$};
-   \path[->] (q0) edge node {$1/\emptyset/R$} (qone1);
-   \path[->] (qone1) edge [loop right] node {$[01]/[01]/R$} (qone1);
+   \path[->] (q0) edge node {$1/\emptyset/\mathrm R$} (qone1);
+   \path[->] (qone1) edge [loop right] node {$[01]/[01]/\mathrm R$} (qone1);
    \node[state] (qonecheck) [below =of qone1]{};
-   \path[->] (qone1) edge  node {$\#/\#/R$} (qonecheck);
-   \path[->] (qonecheck) edge  node {$1/\emptyset/R$} (scanright);
+   \path[->] (qone1) edge  node {$\#/\#/\mathrm R$} (qonecheck);
+   \path[->] (qonecheck) edge  node {$1/\emptyset/\mathrm R$} (scanright);
+
+  \node[draw,align=left,text width=4.9cm] at (5.9,-5.6) {
+    $-$ and $+$ denote the initial and accepting states, resp. \\[0.5em]
+    $[01]/[01]/\textit{d}$ is shorthand for two parallel edges,
+    one $0/0/\textit{d}$ and one $1/1/\textit{d}$,
+    with $d \in \{\mathrm L,\mathrm R\}$.
+  };
 
 
 
