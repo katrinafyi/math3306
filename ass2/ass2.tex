@@ -18,8 +18,8 @@
 \DeclareMathOperator{\lcm}{lcm}
 
 \author{Kait Lam \\ \small \texttt{45294583} \\ \small {T02}}
-\title{\textsc{Math3306} --- Assignment 1 (Submission)}
-\date{16 August 2024}
+\title{\textsc{Math3306} --- Assignment 2 (Submission)}
+\date{6 September 2024}
 
 \begin{document}
 
@@ -39,9 +39,17 @@ Define
 \end{align*}
 That is, the language of encoded pairs of Turing machine number and input, such that the Turing machine halts on the given
 input.
-This is simply encoded within our single-letter alphabet as unary.
+This can be encoded as numerals in the usual way, i.e.\ by prime factors, then
+this is further encoded as unary within our single-letter alphabet.
 Were $L$ regular (that is, recognisable by a finite state automaton), this would easily decide the Halting problem,
 contradicting the known undecidability of this problem.
+
+Specifically, we could construct a TM which implements $\texttt{Halts}(m, x)$
+by encoding $\langle m, x  \rangle$ into unary, then emulating the FSA of $L$ and returning 1/0 depending on whether the unary word is accepted/rejected.
+As Turing machines are more powerful than FSA, this would be a straightforward task. 
+(An FSA can also be translated directly into a TM,
+e.g.\ like Q4(a) of Assignment 1).
+
 
 % More generally, by way of encoding with prime factorisation and G\"odel numbering,
 % any  can be represented as unary in a single-letter alphabet
@@ -82,7 +90,7 @@ contradicting the known undecidability of this problem.
 
 % x + z + (2x + 2z) * y = x + z + 2xy + 2zy
 
-\subsection*{Question 2(a)}
+\subsection*{Question 1(b)}
 \begin{center}
   \textit{Recognise $L = \{0^{2n}~|~ n \ge 0\}$ with a Turing machine.}
 \end{center}
@@ -90,15 +98,18 @@ We will write a recursive algorithm:
 \begin{enumerate}[(1)]
   \setlength{\itemsep}{0pt}
   \item If the string is empty, accept.
-  \item Otherwise, divide the input unary number by two, by
+  \item Otherwise, divide the input unary number by two in this way:
     \begin{enumerate}
-      \item moving right and clearing every second space until the end of the string, then
-      \item moving left and compressing the string, collapsing all cleared spaces.
+      \item move right and clear every second space until the end of the string, then
+      \item move left and compress the string, collapsing all cleared spaces.
     \end{enumerate}
   \item Go to (1).
 \end{enumerate}
 The division algorithm implicitly ensures that the number is divisible by two, otherwise it will halt
 due to missing transitions.
+The full Turing machine is shown in Figure~\ref{fig:tm}.
+For easier reading, we use the single symbol 1 instead of 0.
+Be assured that these are exactly equivalent.
 
 \begin{figure}[h]
   \begin{center}
@@ -134,92 +145,6 @@ due to missing transitions.
 
    \draw [->,rounded corners=1cm](shiftend) to
    ($(shiftend)+(-2.5, 0)$) to   node[xshift=-0.1cm]{$\emptyset/\emptyset/R$}($(q0)+(-2.5,0)$) to  (q0);
-   
-
-   
-
-  %  \node[state] (qhash1) [above right=of q0] {}; 
-  %  \path[->] (q0) edge node [swap]{$\#/\#/\mathrm R$} (qhash1);
-  %  \node[state] (qhash2) [right=of qhash1] {$+$};
-  %  \path[->] (qhash1) edge node {$\emptyset/\emptyset/\mathrm R$} (qhash2);
-  %
-  %  % ZEROS
-  %
-  %  \node[state] (qzero1) [below left=of q0]{$\rightarrow$};
-  %  \path[->] (q0) edge node [swap]{$0/\emptyset/\mathrm R$} (qzero1);
-  %  \path[->] (qzero1) edge [loop left] node {$[01]/[01]/\mathrm R$} (qzero1);
-  %
-  %
-  %  \node[state] (qzerocheck) [below =of qzero1]{};
-  %  \path[->] (qzero1) edge  node [swap]{$\#/\#/\mathrm R$} (qzerocheck);
-  %
-  %  \node[state] (scanright) [below right=of qzerocheck] {$\rightarrow$};
-  %  \path[->] (qzerocheck) edge node [swap]{$0/\emptyset/\mathrm R$} (scanright);
-  %
-  %  \path[->] (scanright) edge [loop right] node [yshift=-0.2cm]{$[01]/[01]/\mathrm R$} (scanright);
-  %
-  %  \node[state] (beginshift) [below =of scanright] {$\ll$};
-  %  \path[->] (scanright) edge node [swap]{$\emptyset/\emptyset/\mathrm L$} (beginshift);
-  %
-  %  \node[state] (ones) [below right=3cm of beginshift] {$\ll$};
-  %  \path[->] (beginshift) edge node {$1/\emptyset/\mathrm L$} (ones);
-  %  \node[state] (zeros) [below left=3cm of beginshift] {$\ll$};
-  %  \path[->] (beginshift) edge node [swap]{$0/\emptyset/\mathrm L$} (zeros);
-  %
-  %  \path[->] (ones) edge [bend left] node [swap]{$0/1/\mathrm L$} (zeros);
-  %  \path[->] (ones) edge [loop right] node {$1/1/\mathrm L$} (ones);
-  %  \path[->] (zeros) edge [bend left] node [swap]{$1/0/\mathrm L$} (ones);
-  %  \path[->] (zeros) edge [loop left] node {$0/0/\mathrm L$} (zeros);
-  %
-  %
-  %  \node[state] (endshift) [below right=3cm of zeros] {$\ll$};
-  %  \path[->] (zeros) edge  node [swap]{$\emptyset/0/\mathrm L$} (endshift);
-  %  \path[->] (ones) edge  node {$\emptyset/1/\mathrm L$} (endshift);
-  %  % \path[->] (beginshift) edge[bend left=4cm] node
-  %  % [swap]{$\emptyset/\emptyset/\mathrm L$} (endshift);
-  %
-  %  \draw [->,rounded corners=2.15cm](beginshift) to
-  %  ($(beginshift)+(4.6, 0)$) to   node[xshift=0.1cm]{$\emptyset/\emptyset/\mathrm L$}($(endshift)+(4.6,0)$) to  (endshift);
-  %
-  %  \node[state] (hashagain) [below=of endshift] {$\leftarrow$};
-  %  \path[->] (endshift) edge node [swap] {$\#/\#/\mathrm L$} (hashagain);
-  %  \path[->] (hashagain) edge [loop right] node  {$[01]/[01]/\mathrm L$} (hashagain);
-  %
-  %  % \node (leftmarker1) [left=3cm of hashagain,scale=0pt] {};
-  %  % \node (leftmarker2) [left=3cm of q0] {};
-  %  % \path[-] (hashagain) edge  node  {asdf} (leftmarker1);
-  %  % \path[-] (leftmarker1) edge node {} (leftmarker2);
-  %  \draw [->,rounded corners=1cm](hashagain) to
-  %  ($(hashagain)+(-5, 0)$) to   node[swap,xshift=0.1cm]{$\emptyset/\emptyset/\mathrm R$}($(q0)+(-5,0)$) to  (q0);
-  %  % \path[->] (hashagain) edge [bend left=16cm] node {asd} (q0);
-  %
-  %
-  %
-  %
-  %  % ONES
-  %
-  %  \node[state] (qone1) [below right=of q0]{$\rightarrow$};
-  %  \path[->] (q0) edge node {$1/\emptyset/\mathrm R$} (qone1);
-  %  \path[->] (qone1) edge [loop right] node {$[01]/[01]/\mathrm R$} (qone1);
-  %  \node[state] (qonecheck) [below =of qone1]{};
-  %  \path[->] (qone1) edge  node {$\#/\#/\mathrm R$} (qonecheck);
-  %  \path[->] (qonecheck) edge  node {$1/\emptyset/\mathrm R$} (scanright);
-  %
-  % \node[draw,align=left,text width=4.9cm] at (5.9,-5.6) {
-  %   $-$ and $+$ denote the initial and accepting states, resp. \\[0.5em]
-  %   $[01]/[01]/\textit{d}$ is shorthand for two parallel edges,
-  %   one $0/0/\textit{d}$ and one $1/1/\textit{d}$,
-  %   with $d \in \{\mathrm L,\mathrm R\}$.
-  % };
-  %
-  %
-  %
-    % (q_0) edge  node {0} (q_1)
-    %       edge  node [swap] {1} (q_2)
-    % (q_1) edge  node  {1} (q_3)
-    %       edge [loop above] node {0} ()
-    % (q_2) edge  node [swap] {0} (q_3) 
-    %       edge [loop below] node {1} ();
 \end{tikzpicture}
 
   \end{center}
@@ -232,6 +157,59 @@ due to missing transitions.
 \begin{center}
   \textit{Is the language of (encoded) pairs of Turing machines with equivalent languages decidable?}
 \end{center}
+I think not.
+If this language was decidable, it could be used to decide the halting problem.
+We will demonstrate this.
+
+Support $m$ and $x$ are given, encoding a Turing machine and an input under test.
+We will compute $\texttt{Halts}(m, x)$.
+First, transform $m$ into $m'$ such that
+\begin{align*}
+  T_{m'}(x') = \begin{cases}
+    \textit{reject} &\text{if }x' \ne \text{$\star$}, \\
+    \textit{accept} &\text{if }T_m(x)\text{ halts},\text{ and}\\
+    \textit{undefined} & \text{otherwise}.
+  \end{cases}
+\end{align*}
+Note that implementing $T_{m'}$ does \textit{not} require solving halting,
+since we do not expect a concrete return value if $T_m(x)$ diverges.
+$T_{m'}$ could be implemented from $T_m$ by %a simple check $x' = \text{``$\star$''}$, then
+replacing all rejecting or missing edges
+with an edge to an accepting state, 
+then adding an initial check that $x' = \text{$\star$}$.
+The language of $T_{m'}$ is $\{\text{$\star$}\}$ if $T_m(x)$
+halts and $\emptyset$ otherwise.
+
+
+
+% Note we use $T_m$ and $T_{m'}$ to refer to the TMs encoded
+% by $m$ and $m'$, respectively.
+
+
+Suppose, with suspicion, that we now have a decider for $\texttt{EQ}_{\text{TM}}$.
+We could then run the 
+$\texttt{EQ}_{\text{TM}}$
+decider and ask whether
+$T_{m'}$ has the same language as the Turing machine recognising precisely $\{\star\}$.
+By decidability, we have that the decider \textit{will} return either \texttt 1 or \texttt 0
+for all inputs,
+and this will represent whether the given TMs have the same language.
+To implement our
+$\texttt{Halts}(m, x)$,
+we simply propagate the result of the decider.
+
+This decides the undecidable halting problem, a contradiction, and so $\texttt{EQ}_{\text{TM}}$
+cannot be decidable.
+
+
+
+% (arbitrarily) it takes its input as binary strings.
+% We construct 
+% \begin{align*}
+%   \texttt{Halts}(m, x) &= \texttt{EQ}_{\text{TM}}()
+% \end{align*}
+
+
 
 \section*{Question 3}
 \begin{center}
@@ -244,10 +222,28 @@ Given $f$ and $g$ primitive-recursive,
     0 & \text{otherwise.}
   \end{cases}
 \end{align*}
+This can be expressed using bounded minimisation
+(in this case, acting like bounded iteration).
+\begin{align*}
+  p(x) := \big(~x+1 = \mu(1\le i \le x).~(x+1 \ne \mu(1\le j \le x).~f(i) \le g(j))~\big)
+\end{align*}
+The desired predicate returns 1 iff $f(i)$ is always
+greater-than $g(j)$ within
+the square $1 \le i,j \le x$.
+We implement this by searching within this region for counter-examples,
+using bounded minimisation.
+The bounded minimisation operator returns the least index satisfying its
+argument function, if it exists, otherwise it returns one more than its upper bound.
 
-\section*{Prove \textit{SOL} is NP-complete (both NP-hard and itself in NP).}
+We check the result of the inner $\mu$ to see if we have found \textit{any} counter-example,
+and at the outer $\mu$, we check the inverse to ensure there have been \textit{no} counterexamples.
+This will make sure we return the correct result of the predicate.
+We assume the equality and disequality operators return either 0 or 1.
+
+\section*{Question 4}
 \begin{center}
-  \textit{Show the following predicate is primitive-recursive.}
+  \textit{
+  Prove \textit{SOL} is NP-complete (both NP-hard and itself in NP).}
 \end{center}
 
 \end{document}
