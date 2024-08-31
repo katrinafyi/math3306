@@ -240,6 +240,13 @@ and at the outer $\mu$, we check the inverse to ensure there have been \textit{n
 This will make sure we return the correct result of the predicate.
 We assume the equality and disequality operators return either 0 or 1.
 
+(Essentially, this encodes
+\begin{align*}
+  p(x) &= \neg \exists(1 \le i \le x).~\exists(1 \le j \le x).~f(i) \le g(j) \\
+       &= \forall(1 \le i \le x).~\forall(1 \le j \le x).~f(i) > g(j),
+\end{align*}
+since $x + 1 \ne \mu(\cdot).~P$ implements $\exists(\cdot).~P$.)
+
 \section*{Question 4}
 \begin{center}
   \textit{
