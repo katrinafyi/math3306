@@ -3,6 +3,7 @@
 
 \usepackage{geometry}
 \usepackage{amsmath}
+\usepackage{blkarray}
 \usepackage{enumerate}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -250,8 +251,152 @@ since $x + 1 \ne \mu(\cdot).~P$ implements $\exists(\cdot).~P$.)
 \section*{Question 4}
 \begin{center}
   \textit{
-  Prove \textit{SOL} is NP-complete (both NP-hard and itself in NP).}
+  Prove SOL  is {NP}-complete (both {NP}-hard and itself in {NP}).}
 \end{center}
+First we prove that SOL  is {NP}-hard by reducing 3SAT to SOL.
+For simplicity, we use the symbols T and F (loosely corresponding to true and false) instead of the colours red and blue.
+We introduce the following correspondences
+from 3SAT concepts into SOL.
+\begin{itemize}
+  \setlength{\itemsep}{0pt}
+  \item atoms\footnote{an atom is a variable or a negated variable.} are encoded as columns, one column each for its regular and negated forms
+    (so, 6 columns for 3SAT), and
+  \item a disjunctive clause is encoded as a row,
+    with a T in columns corresponding to atoms appearing in the clause and empty elsewhere.
+\end{itemize}
+The semantics of 3SAT are mapped in this way:
+\begin{itemize}
+  \setlength{\itemsep}{0pt}
+  \item Validity of the
+    disjunction is enforced by each row containing at least one stone,
+    corresponding to at least one true atom within the clause. 
+  \item The conjunction of clauses is caused by each clause appearing in its own line, as 
+    the rules of SOL require every row to be non-empty (and so every clause must be satisfied).
+  \item The law of excluded middle\footnote{actually, the law of non-contradiction.} is implemented by a special $2\times2$
+    square at the bottom of each pair of $x$ and $\neg x$ columns (explained more below).
+    This leverages the rule requiring 
+    each column hold stones of at most one colour. 
+  \item A winning position is interpreted as a result of ``sat'' and an unwinnable
+    position is ``unsat''.
+\end{itemize}
+
+\subsection*{Further details}
+For each variable, the $x$ and $\neg x$ columns are  related
+through a $2 \times 2$ control square, shown below.
+This pattern ensures that a T symbol appears in at most one of the two columns.
+\begin{align*}
+\begin{blockarray}{cc}
+x & \neg x  \\ \hline
+\begin{block}{cc}
+  \vdots & \vdots  \\
+  \text F & \text F  \\
+  \text T & \text T  \\
+\end{block}
+\end{blockarray}
+\end{align*}
+Consider the square in isolation: how could this pattern be won?
+Each column may only hold one symbol, so either T or F needs to be cleared
+from one column, and the other symbol from the other.
+The result must be one column with F and one with T, forcing the 
+cells above the F column to be cleared of T.
+Further, there are no other cells in these two rows, so
+the player may not clear both symbols in the same row.
+The F/T in this control square can be thought of as that atom's valuation.
+
+In the rest of the playing field, however,
+the player may clear T symbols even if the atom column has a valuation of T.
+The presence of a T symbol indicates both that the corresponding
+atom is true \textit{and} that it is relevant for the solution.
+One symbol in each row is enough to satisfy SOL, just like
+one true atom satisfies the disjunction.
+
+Finally, we note that this can be simplified by omitting the T row of the $2 \times 2$ control square. This allows a winning configuration to have both F symbols still present. In such cases, both columns must be cleared of T and the formula is
+satisfiable regardless of the value of that variable.
+
+It can be further simplified by using only one column per variable (3 columns total) and using T for $x$ and F for $\neg x$.
+This requires preprocessing to eliminate trivially-satisfied clauses but
+avoids the need for a LEM-enforcing square.
+We do not use this because we enjoy logic puzzles.
+
+\subsection*{Example}
+Consider the 3SAT problem of
+\begin{align*}
+  (x \vee \neg x \vee z) \wedge (\neg x \vee y \vee z).
+\end{align*}
+This would be translated as the $8\times8$ game board below. 
+The two columns further to the right are entirely blank.
+Note the column labels are informational only and not part of the game.
+\begin{align*}
+\begin{blockarray}{cccccc}
+  x & \neg x&
+  y & \neg y&
+z & \neg z
+\\ \hline
+\begin{block}{cccccc}
+  \text T & \text T & & & \text T \\
+          &\text T  & \text T & & \text T \\
+  \text F & \text F  \\
+  \text T & \text T  \\
+          && \text F & \text F  \\
+          && \text T & \text T  \\
+          &&&& \text F & \text F  \\
+          &&&& \text T & \text T  \\
+\end{block}
+\end{blockarray}
+\end{align*}
+This board has a winning configuration, such as the one below.
+The SAT solution can be read off from the control blocks.
+Here, it is $x = y = z = \textit{False}$.
+\begin{align*}
+\begin{blockarray}{cccccc}
+  x & \neg x&
+  y & \neg y&
+z & \neg z
+\\ \hline
+\begin{block}{cccccc}
+  & \text T & & & \\
+          &\text T  & & & \\
+  \text F & \\
+  & \text T  \\
+          && \text F & \\
+          && & \text T  \\
+          &&&& \text F & \\
+          &&&& & \text T  \\
+\end{block}
+\end{blockarray}
+\end{align*}
+
+\subsection*{Proof of reduction}
+We argue that this mapping is sound and complete.
+\begin{itemize}
+  \item For completeness (satisfiable 3SAT $\longrightarrow$ winnable SOL configuration),
+    take the satisfying 3SAT valuation and the corresponding
+    initial game board.
+    For each atom column, if it holds, clear all F from the column, and if it doesn't, clear all T from the column.
+    The result is a winning configuration.
+
+    Uniqueness of column colour is since each column had one colour cleared,
+    and non-emptiness of row is since each clause is satisfied and by structure
+    of the control squares.
+
+  \item For soundness
+    (unsatisfiable 3SAT problem $\longrightarrow$ no winning SOL board),
+    we prove the contrapositive:
+    if a game board, constructed from a 3SAT problem, is winnable, then 
+    the 3SAT problem is satisfiable. 
+    Suppose we have a winning game board.
+    Read off the variable valuation from the control squares, as per the example.
+    ... ...
+
+\end{itemize}
+We conclude the 3SAT problem is faithfully reducible to SOL.
+Since 3SAT is NP-hard, this demonstrates SOL is NP-hard.
+
+\subsection*{Proof of NP}
+
+
+
+
 
 \end{document}
 
