@@ -178,7 +178,8 @@ $T_{m'}$ could be implemented from $T_m$ by %a simple check $x' = \text{``$\star
 replacing all rejecting or missing edges
 with an edge to an accepting state, 
 then adding an initial check that $x' = \text{$\star$}$.
-The language of $T_{m'}$ is $\{\text{$\star$}\}$ if $T_m(x)$
+By careful construction,
+the language of $T_{m'}$ is $\{\text{$\star$}\}$ if $T_m(x)$
 halts and $\emptyset$ otherwise.
 
 
@@ -382,17 +383,44 @@ We argue that this mapping is sound and complete.
   \item For soundness
     (unsatisfiable 3SAT problem $\longrightarrow$ no winning SOL board),
     we prove the contrapositive:
-    if a game board, constructed from a 3SAT problem, is winnable, then 
+    if a SOL board constructed from a 3SAT problem is winnable, then 
     the 3SAT problem is satisfiable. 
     Suppose we have a winning game board.
-    Read off the variable valuation from the control squares, as per the example.
-    ... ...
+    Read off the variable valuations from the control squares,
+    as per the example.
+
+    By uniqueness of column colour and the control squares, we have 
+    that for all each variable, $x$ and $\neg x$ have opposite values.
+    Since we constructed one row per clause and 
+    we have at least one stone per row,
+    we know every disjunctive clause has at least one true atom,
+    satisfying the proposition.
 
 \end{itemize}
 We conclude the 3SAT problem is faithfully reducible to SOL.
 Since 3SAT is NP-hard, this demonstrates SOL is NP-hard.
 
 \subsection*{Proof of NP}
+We show SOL is in NP by constructing a polynomial-time verification algorithm
+for the game of SOL.
+
+We take as input the initial $n\times n$ SOL board and the final
+$n \times n$ board state,
+and we need to determine if the final board is a winning configuration. Note
+that this information is polynomial (approx.\ $2n^2$ in size).
+
+First, check that the final state is a subset of the initial board,
+i.e.\ the player has not cheated by adding new stones.
+This is about $n^2$ operations.
+Then, check both the column rule (uniqueness within a column)
+and the row rule (non-emptiness within a row).
+These will be $n^2$ each.
+
+If all these checks pass, the solution is validated.
+Otherwise, it is rejected.
+This polynomial-time checking algorithm shows that SOL is in NP. 
+
+
 
 
 
