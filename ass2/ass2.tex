@@ -32,57 +32,79 @@
 \begin{center}
   \textit{Must a language over a single-letter alphabet be regular?}
 \end{center}
-Of course not.
-Even with only a single letter, it is sufficiently powerful to represent any set of natural numbers.
-Define
-\begin{align*}
-  L = \{w \in \{\star\}^* ~|~ \ell(w) = \langle M, x \rangle \text{ and } \texttt{TM}_M\text{ halts on input }x\}.
-\end{align*}
-That is, the language of encoded pairs of Turing machine number and input, such that the Turing machine halts on the given
-input.
-This can be encoded as numerals in the usual way, i.e.\ by prime factors, then
-this is further encoded as unary within our single-letter alphabet.
-Were $L$ regular (that is, recognisable by a finite state automaton), this would easily decide the Halting problem,
-contradicting the known undecidability of this problem.
-
-Specifically, we could construct a TM which implements $\texttt{Halts}(m, x)$
-by encoding $\langle m, x  \rangle$ into unary, then emulating the FSA of $L$ and returning 1/0 depending on whether the unary word is accepted/rejected.
-As Turing machines are more powerful than FSA, this would be a straightforward task. 
-(An FSA can also be translated directly into a TM,
-e.g.\ like Q4(a) of Assignment 1).
-
+% Of course not.
+% Even with only a single letter, it is sufficiently powerful to represent any set of natural numbers.
+% Define
+% \begin{align*}
+%   L = \{w \in \{\star\}^* ~|~ \ell(w) = \langle M, x \rangle \text{ and } \texttt{TM}_M\text{ halts on input }x\}.
+% \end{align*}
+% That is, the language of encoded pairs of Turing machine number and input, such that the Turing machine halts on the given
+% input.
+% This can be encoded as numerals in the usual way, i.e.\ by prime factors, then
+% this is further encoded as unary within our single-letter alphabet.
+% Were $L$ regular (that is, recognisable by a finite state automaton), this would easily decide the Halting problem,
+% contradicting the known undecidability of this problem.
+%
+% Specifically, we could construct a TM which implements $\texttt{Halts}(m, x)$
+% by encoding $\langle m, x  \rangle$ into unary, then emulating the FSA of $L$ and returning 1/0 depending on whether the unary word is accepted/rejected.
+% As Turing machines are more powerful than FSA, this would be a straightforward task. 
+% (An FSA can also be translated directly into a TM,
+% e.g.\ like Q4(a) of Assignment 1).
+%
 
 % More generally, by way of encoding with prime factorisation and G\"odel numbering,
 % any  can be represented as unary in a single-letter alphabet
-
+% \hline
 % Assume, with the intent of contradiction, that $L$ is regular.
 % It may be irregular.
-% Consider the language
-% \begin{align*}
-%    L = \{ w \in \{\star\}^* ~|~ \ell(w)\text{ is prime}\}.
-% \end{align*}
-% Assume, with the intent of contradiction, that $L$ is regular and so the pumping lemma applies.
-% By pumping, there exists $p_L > 1$ such that for all $w \in L$, 
-% if $\ell(w) > p_L$, then there exists $x, y, z$ such that $w = xyz$ and 
-% \begin{enumerate}[(i)]
-%   \item $\ell(y) \ge 1$,
-%   \item $\ell(xy)  < p_L$, and
-%   \item $\forall n \ge 0, xy^nz \in L$.
-% \end{enumerate}
-% By property (iii), we can construct a word with non-prime length and assert it must be in $L$.
-% To wit, the string
-%   $xy^{2(\ell(x)+\ell(z))+1}z$.
-% Observe,
-% \begin{align*}
-%   \ell(xy^{2(\ell(x)+\ell(z)+1)}z) &= \ell(x) + (2\ell(x) + 2\ell(z) + 1)\cdot \ell(y) + \ell(z) \\
-%   &= 2(\ell(x) + \ell(z))\cdot(\ell(y) + 1)
-% \end{align*}
-% which is a non-prime length with factors $\ell(x) + \ell(z)$ and $\ell(y) + 1$.
-% The pumping lemma claims this word is in $L$ which contradicts its original definition.
+\noindent Consider the language
+\begin{align*}
+   L = \{ w \in \{\star\}^* ~|~ \ell(w)\text{ is prime}\}.
+\end{align*}
+Assume, with the intent of contradiction, that $L$ is regular and so the pumping lemma applies.
+By pumping, there exists $p_L > 1$ such that for all $w \in L$, 
+if $\ell(w) > p_L$, then there exists $x, y, z$ such that $w = xyz$ and 
+\begin{enumerate}[(i)]
+  \setlength{\itemsep}{0pt}
+  \item $\ell(y) \ge 1$,
+  \item $\ell(xy)  < p_L$, and
+  \item $\forall n \ge 0, xy^nz \in L$.
+\end{enumerate}
+By the infinitude of primes, we can obtain
+$w \in L$ such that $\ell(w) > p_L$.
+Let $xyz=w$ be a decomposition as described.
+
+First,
+note that $\ell(xy) < p_L$ (property (ii)) specifies a fixed bound on the length of $xy$.
+Therefore, since $w = xyz$, we can make $\ell(z)$ arbitrarily large by choosing a sufficiently large $w \in L$.
+Without loss of generality, suppose we choose $w$ such that $\ell(z) \ge 2$.
+% This will be useful later.
+
+Now, by property (iii), we can construct a word with non-prime length and assert it must be in $L$.
+To wit, the string
+  $xy^{\ell(x)+\ell(z)}z$.
+Observe,
+\begin{align*}
+  \ell(xy^{\ell(x)+\ell(z)}z) &= \ell(x) ~+~ \ell(y) (\ell(x) + \ell(z))~+~ \ell(z) \\
+  &= (\ell(x) + \ell(z))\cdot(\ell(y) + 1)
+\end{align*}
+and note that (iii) provides that this word be within $L$.
 %
+To show that this factorisation demonstrates non-primality,
+we should ensure both factors are greater than one.
+For the right factor, note that $\ell(y) + 1 \ge 2$ by (i).
+For the left factor, we have $\ell(x) + \ell(z) \ge 2$,
+due to our earlier choice guaranteeing $\ell(z) \ge 2$.
+
+Concluding,
+$xy^{\ell(x)+\ell(z)}z$
+is a word with non-prime length
+(with factors $\ell(x) + \ell(z)$ and $\ell(y) + 1$).
+The pumping lemma implies this word is in $L$ which contradicts
+the original definition of $L$, so $L$ is a unary language which cannot be regular.
+
 % As some technicalities,
 % we note that due to infinitude of primes, we can obtain at least one $w \in L$ such that $\ell(w) > p_L$, in order to build our composite number.
-% Also note that due to (i), $\ell(y) + 1 \ge 2$ and, due to (ii) and $\ell(xyz) > p_L$, $\ell(z) \ge 1$.
 %
 %
 % x + n y + z
@@ -247,7 +269,7 @@ We assume the equality and disequality operators return either 0 or 1.
   p(x) &= \neg \exists(1 \le i \le x).~\exists(1 \le j \le x).~f(i) \le g(j) \\
        &= \forall(1 \le i \le x).~\forall(1 \le j \le x).~f(i) > g(j),
 \end{align*}
-since $x + 1 \ne \mu(\cdot).~P$ implements $\exists(\cdot).~P$.)
+since ``$x + 1 \ne \mu(\cdot).~P$'' implements ``$\exists(\cdot).~P$''.)
 
 \section*{Question 4}
 \begin{center}
