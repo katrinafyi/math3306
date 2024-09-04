@@ -278,8 +278,13 @@ since ``$x + 1 \ne \mu(\cdot).~P$'' implements ``$\exists(\cdot).~P$''.)
 \end{center}
 First we prove that SOL  is {NP}-hard by reducing 3SAT to SOL.
 For simplicity, we use the symbols T and F (loosely corresponding to true and false) instead of the colours red and blue.
+
+A 3SAT formula with $c$ clauses is to be translated into a
+$(c+6)\times(c+6)$ SOL board.
+This is computable in a polynomial amount of time, since the contents
+of each board cell can be determined in polynomial time.
 We introduce the following correspondences
-from 3SAT concepts into SOL.
+from 3SAT concepts into SOL:
 \begin{itemize}
   \setlength{\itemsep}{0pt}
   \item atoms\footnote{an atom is a variable or a negated variable.} are encoded as columns, one column each for its regular and negated forms
