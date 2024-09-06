@@ -255,16 +255,22 @@ The desired predicate returns 1 iff $f(i)$ is always
 greater-than $g(j)$ within
 the square $1 \le i,j \le x$.
 We implement this by searching within this region for counter-examples,
-using bounded minimisation.
+using (a variation of) bounded minimisation.
 The bounded minimisation operator returns the least index satisfying its
 argument function, if it exists, otherwise it returns one more than its upper bound.
 
 We check the result of the inner $\mu$ to see if we have found \textit{any} counter-example,
 and at the outer $\mu$, we check the inverse to ensure there have been \textit{no} counterexamples.
 This will make sure we return the correct result of the predicate.
-We assume the equality and disequality operators return either 0 or 1.
 
-(Essentially, this encodes
+We assume the equality and disequality operators return either 0 or 1.
+We can implement our variation of bounded minimisation (including a lower bound)
+by using
+\begin{align*}
+\mu (lo \le i \le hi).~P(i) := \mu (i \le hi).~(P(i) \wedge lo \le i).
+\end{align*}
+
+(Essentially, our primitive-recursive expression encodes
 \begin{align*}
   p(x) &= \neg \exists(1 \le i \le x).~\exists(1 \le j \le x).~f(i) \le g(j) \\
        &= \forall(1 \le i \le x).~\forall(1 \le j \le x).~f(i) > g(j),
