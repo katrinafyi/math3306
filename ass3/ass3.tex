@@ -138,15 +138,18 @@ In a world where $\in$ is $<$ and the universe is $\mathbb N$, \ldots
   \textit{Conclude that a non-zero ordinal $\lambda$ is a limit ordinal if and only if
   $\bigcup \lambda = \lambda$.}
 \end{flushleft}
+In these proofs, keep in mind
+that the big union of a set of ordinals is an ordinal.
 We will prove this in two parts:
 \begin{itemize}
   \item $\text{(ii)} \implies \neg\text{(i)}$:
-    This is apparent. If $A$ has a largest element, then it is certainly not the case that it has \textit{no} largest element.
+    This is apparent. (ii) states that $A$ has no largest
+    element and $\bigcup A \notin A$.
   \item $\neg\text{(ii)} \implies \text{(i)}$:
     After applying De Morgan's laws to $\neg$(ii), we have three cases from each of the terms within (ii).
     Note that these are negated, since $\neg(p \wedge q) \equiv \neg p \vee \neg q$.
     \begin{itemize}
-      \item ``$A$ has a largest element''$ \implies $(i):
+      \item $A$ has a largest element$ \implies $(i):
         Suppose $A$ has a largest element, $\alpha \in A$,
         such that for all $\alpha' \in A$ where $\alpha' \ne \alpha$,
         we have $\alpha' < \alpha$.
@@ -158,12 +161,71 @@ We will prove this in two parts:
         Therefore, $\bigcup A$ is precisely the largest element of $A$.
 
       \item $\bigcup A \in A \implies $(i):
-        Let $\alpha \in A$ be arbitrary. By the properties of union,
-        we have $\alpha \subseteq \bigcup A$ which implies $\alpha \le \bigcup A$
-        (since $\bigcup A$ and $\alpha$ are both ordinals).
+        Let $\alpha \in A$ be arbitrary. Since the big union of $A$ contains 
+        all elements of $A$ as subsets,
+        we have $\alpha \subseteq \bigcup A$ and $\alpha \le \bigcup A$.
         And so $\bigcup A$ is the largest element.
-      \item ``$\bigcup A$ is the successor of some other ordinal''$ \implies $(i):
+      \item $\bigcup A$ is the successor of some other ordinal$ \implies $(i):
+        Let $\alpha$ be an ordinal such that $\bigcup A = (\alpha \cup \{\alpha\})$.
+        Because $\alpha \in \bigcup A$, there exists $\beta \in A$ such that
+        $\alpha \in \beta \in A$.
+        We will show that $\beta = \bigcup A$.
+
+        To see $\bigcup A \subseteq \beta$, note that $\alpha \in \beta$
+        and $\alpha \subset \beta$ (as $\alpha$ and $\beta$ are ordinals).
+        Then, the union of $\{\alpha\}$ and $\alpha$, namely $\bigcup A$, must be
+        contained within $\beta$.
+        For $\beta \subseteq \bigcup A$, this is by a simple property of unions.
+        As $\beta \in A$, we must have $\beta \subseteq \bigcup A$.
+
+        This gives us $\bigcup A \in A$ and we can apply the previous case
+        to conclude (i). 
     \end{itemize}
+\end{itemize}
+Now, we use this result to show a non-zero ordinal $\lambda$ is a limit ordinal
+if and only if $\bigcup \lambda = \lambda$.
+\begin{itemize}
+  \item $(\Longleftarrow)$:
+    If $\bigcup \lambda = \lambda$, then it cannot be the case that $\bigcup \lambda = \lambda \in \lambda$ --- that would violate the axiom of foundation.
+    In particular, this means that $\bigcup \lambda$ is not the greatest element of $A$.
+    This
+    is in conflict with case (i) of the lemma,
+    leaving us in case (ii).
+    Since $\lambda$ 
+    is not a successor (due to (ii)) and it is not zero,
+    it must be a limit ordinal.
+  \item $(\Longrightarrow)$:
+    Assume $\lambda$ is not a successor ordinal and is not zero.
+
+    To show $\lambda \subseteq \bigcup \lambda$,
+    we begin with an arbitrary $\alpha \in \lambda$.
+    We have $a \subseteq \bigcup \lambda$
+    by a property of the big union.
+    We show that we cannot have $\alpha =  \bigcup \lambda$. 
+    If this was the case, then we would have $\bigcup \lambda \in \lambda$
+    and by the ``$\bigcup A \in A \implies $(i)'' case of the lemma,
+    this would imply that $\bigcup \lambda$ is the largest element.
+    From this, we could write
+    $\lambda = (\,\bigcup \lambda\,) \cup \{\bigcup \lambda\}$,
+    since $\bigcup \lambda$ is the largest ordinal less than $\lambda$.
+    This contradicts the assumption $\lambda$ is a limit ordinal.
+    Therefore, $\alpha \subset \bigcup \lambda$ and so $\alpha \in \bigcup \lambda$, and
+    we obtain $\lambda \subseteq \bigcup \lambda$.
+
+    For $\bigcup \lambda \subseteq \lambda$,
+    choose $\alpha \in \bigcup \lambda$.
+    Then, there exists $\beta \in \lambda$ such that $\alpha \in \beta \in \lambda$.
+    As $\beta$ and $\lambda$ are both ordinals,
+    $\alpha \in \beta \subset \lambda$ and so $\alpha \in \lambda$
+    and the non-strict subset holds.
+
+
+
+
+
+
+
+
 \end{itemize}
 
 
