@@ -233,8 +233,79 @@ if and only if $\bigcup \lambda = \lambda$.
 \section*{Question 4}
 \begin{center}
   \textit{Given $\alpha \ne 0$ an ordinal and $\lambda$ a limit ordinal,
-  prove that $a \cdot \lambda$ is a limit ordinal.}
+  prove that $\alpha \cdot \lambda$ is a limit ordinal.}
 \end{center}
+First, note that $\alpha \cdot \lambda \ne 0$ since
+$\alpha \ne 0$ and $\omega \le \lambda$, and so
+$\alpha \cdot 0 \in \alpha \cdot 1 \subseteq \bigcup_{\delta < \lambda}(\alpha \cdot \delta)=\alpha \cdot \lambda$.
+
+We now prove the main statement by contradiction.
+Suppose $\alpha \cdot \lambda$ is a successor ordinal.
+Then, there exists $\Lambda$, an ordinal, such that
+$\alpha \cdot \lambda = \Lambda \cup \{\Lambda\}$.
+Using the recursive definition of multiplication,
+$\alpha \cdot \lambda = \bigcup_{\delta < \lambda}(\alpha \cdot \delta) = \Lambda \cup \{\Lambda\}$.
+Note that this implies $\Lambda$ is the greatest element of $\alpha \cdot \lambda$.
+Since $\Lambda \in \bigcup_{\delta < \lambda}(\alpha \cdot \delta)$,
+there exists $\gamma \in \lambda$
+such that $\Lambda \in \alpha \cdot \gamma$.
+
+We now show that this implies
+that $\gamma$ is the maximum of $\lambda$ (a contradiction).
+To do this, we use contradiction again (I'm sorry);
+suppose there exists $\gamma' \in \lambda$ and $\gamma < \gamma'$.
+Then, we would have $\alpha \cdot \gamma < \alpha \cdot \gamma'$ (see lemma below)
+and so there exists $\Lambda'$ such that $\Lambda' \in \alpha \cdot \gamma'$ but
+$\Lambda' \notin \alpha \cdot \gamma$
+(so, by total ordering of ordinals, $\Lambda' \subseteq \alpha \cdot \gamma$).
+However, we would still have
+$\alpha \cdot \gamma' \subseteq \bigcup_{\delta < \lambda}(\alpha \cdot \delta)=\alpha \cdot \lambda$.
+Therefore,
+$\Lambda \in \alpha \cdot \gamma ~\subseteq~ \Lambda' \in \alpha \cdot \gamma' ~\subseteq~ \alpha \cdot \lambda$
+and $\Lambda'$ is a larger element than $\Lambda$, contradicting the maximality
+of $\Lambda$.
+
+Concluding, we have found a maximum of $\lambda$
+due to $\alpha \cdot \lambda$ having a maximum element.
+This contradicts the assumption $\lambda$ was a limit ordinal,
+and so $\alpha \cdot \lambda$ mustn't
+be a successor ordinal.
+We conclude $\alpha \cdot \lambda$ is a limit ordinal.
+
+% \vspace{0.7em}
+% \noindent
+Within this proof, we used a little lemma which we will show now---namely, that $\alpha < \beta \implies \gamma \cdot \alpha < \gamma \cdot \beta$,
+for non-zero $\gamma$ and any ordinals $\alpha, \beta$
+(i.e.\ ordinal multiplication
+is strictly increasing in its second argument).
+The proof is by induction and cases on $\beta$.
+If $\beta = 0$, the lemma is vacuously true.
+Otherwise,
+if $\beta$ is a successor ordinal,
+$\gamma \cdot \beta = \gamma \cdot \operatorname{pred}(\beta) + \gamma$.
+If $\alpha = \operatorname{pred}(\beta)$, then the result is apparent
+using ``$\forall \text{ ordinal }\alpha,\beta : \alpha \ne 0 \implies \beta < \beta + \alpha$''.
+If $\alpha < \operatorname{pred}(\beta)$,
+we apply the inductive hypothesis.
+Finally,
+if $\beta$ is a limit ordinal, 
+then
+ $\alpha + 1 \in \beta$ since $\alpha \in \beta$.
+ % and $\gamma \cdot (\alpha + 1) \subseteq \gamma \cdot \beta$.
+Therefore, $\gamma \cdot \alpha ~<~ (\gamma \cdot \alpha + \gamma) ~=~ \gamma \cdot (\alpha + 1) ~\subseteq~ =~ \bigcup_{\delta < \beta}(\gamma \cdot \delta) ~=~\gamma \cdot \beta$.
+(The leftmost inequality is due to right-monotonicity of $+$.)
+This concludes the proof.
+
+
+% Here, we use the definition of
+% $\gamma \cdot\alpha = \sum_{\xi < \alpha}\gamma=\operatorname{Ord}(A_\alpha, <_{A_\alpha})$
+% where $A_\alpha = \bigcup_{\xi < \alpha} (\gamma \times \{\xi\})$
+% and similarly for $\gamma \cdot \beta$.
+% We see that $A_\alpha$ is a strict subset of $A_\beta$ and so
+% their corresponding ordinals will be ordered in the same manner.
+
+
+
 
 
 
