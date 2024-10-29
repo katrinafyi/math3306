@@ -15,6 +15,7 @@
 \usetikzlibrary{positioning,arrows.meta,calc}
 \usetikzlibrary{angles,intersections,quotes,arrows.meta}
 
+\DeclareMathOperator{\Diag}{Diag}
 
 \DeclareMathOperator{\lcm}{lcm}
 
@@ -35,6 +36,45 @@
 \begin{center}
   \textit{This question asks which elements of $(\mathbb N, +)$ and $(\mathbb Z, +)$ are (0-)definable.}
 \end{center}
+In $(\mathbb N, +)$, we claim that every element is definable.
+First, we define a comparison operator by
+$x \le y \equiv (\exists z.~ x + z = y)$.
+This can be thought of as a syntactic abbreviation if desired.
+Now we make an inductive argument.
+Starting with zero, we define 0 as the 
+least value of the natural numbers,
+$\varphi_0(z) \equiv (\forall y.~ z \le y)$.
+This exists and is unique by properties of the natural numbers.
+For the inductive case, assume 
+there exists $\varphi_n$ defining $n$.
+Then, we define $n+1$
+as $\varphi_{n+1}(n') \equiv \neg \varphi_n(n')  \wedge (\forall y.\,(\exists x. \,\varphi_n(x)\wedge x \le y) \longrightarrow n' \le y)$.
+That is, the least number which is greater than (but not equal to) $n$.
+Here, 
+$(\exists x. \,\varphi_n(x)\wedge x \le y)$
+should be thought of as ``$n \le y$''.
+This is a funny trick to give a name to the
+value of $n$.
+
+In $(\mathbb Z, +)$, only zero is definable.
+Zero is the unique value satisfying 
+$\varphi_0(z) \equiv (\forall y. \,y + z = y)$ (additive identity).
+To see the remaining numbers are undefinable, we should look at the atomic
+formulas expressable with this language;
+with only a $+$ function, these formulas have the form
+$x_1 + \cdots + x_n = y_1 + \cdots + y_m$.
+However, whenever such a formula is satisfied by a valuation $\bar b$,
+it is also satisfied by $-(\bar b)$---that is, $\bar b$
+with its elements negated.
+By induction on formula, this extends to all non-atomic formulas in the language.
+
+This means that if a number satisfies a formula with one free variable,
+so does its negation.
+Therefore, all non-zero numbers cannot be defined by a formula.
+Zero may still be definable (since it is equal to its negation),
+and indeed we defined it earlier.
+
+
 
 \section*{Question 2}
 % \subsection*{Question 1(a)}
@@ -42,6 +82,45 @@
   \textit{If $L$ is a language with only relations and $M$ and $N$ are
   elementarily-equivalent finite $L$-structures, then $M$ and $N$ are isomorphic.}
 \end{center}
+First, assume $L$ has only finitely many relations.
+Let $A_M$ and $A_N$ be the object sets of $M$ and $N$, resp.
+Consider the atomic diagram $\Diag(M)$.
+As $A_M$ is finite and $L$ has finitely many relations,
+the set $\Diag(M)$ is also finite.
+Let $\varphi$ be the $L(A_M)$-sentence from conjoining all
+sentences within $\Diag(M)$.
+This is an elementary formula so it also holds in $N_{A_M}$
+($N$ extended with constants from $A_M$), and so
+$N_{A_M} \models \Diag(M)$.
+By Robertson's lemma, this tells us there is an embedding of
+$M$ into $N$.
+By a symmetric argument, we can start with $\Diag(N)$ to obtain
+an embedding of $N$ into $M$.
+Since there is an embedding (injective and homomorphic) both ways, the two structures must be isomorphic.
+
+For the general case where $L$ may be infinite, we seek some way to reduce
+it to the finite case by exploiting the finiteness of $M$ and $N$.
+For the case where the relations in $L$ have bounded arity,
+this is easy:
+by the boundedness of arity and finiteness of the structures,
+there are a finite number of distinct relations within the structure.
+Therefore, we proceed as before but we take a finite subset of $\Diag(M)$
+with only one representative relation from each equivalence class of equivalent
+relations.
+We then additionally introduce a (possibly-infinite) number of formulas
+of the form $\forall x_1,\ldots,x_n.\, (R(x_1,\ldots,x_n) \longleftrightarrow R'(x_1,\ldots,x_n))$
+for each pair of relations in each equivalence class.
+These quantified formulas, as well as the formula from a subset of $\Diag(M)$,
+are preserved in $N$ by elementary equivalence.
+We can use this to show that the full theory of $\Diag(M)$ is modelled by $N$,
+then proceed in the same way as the finite case.
+
+When $L$ is infinite and its relations do not have a bounded arity,
+we will have to do something else.
+
+
+
+
 
 \section*{Question 3}
 % \subsection*{Question 1(a)}
