@@ -16,12 +16,13 @@
 \usetikzlibrary{angles,intersections,quotes,arrows.meta}
 
 \DeclareMathOperator{\Diag}{Diag}
+\DeclareMathOperator{\Th}{Th}
 
 \DeclareMathOperator{\lcm}{lcm}
 
 \author{Kait Lam \\ \small \texttt{45294583} \\ \small {T02}}
 \title{\textsc{Math3306} --- Assignment 4 (Submission)}
-\date{25 October 2024}
+\date{29 October 2024 (extension)}
 
 \def\dotminus{\mathbin{\ooalign{\hss\raise1ex\hbox{.}\hss\cr
   \mathsurround=0pt$-$}}}
@@ -100,9 +101,8 @@ Since there is an embedding (injective and homomorphic) both ways, the two struc
 
 For the general case where $L$ may be infinite, we seek some way to reduce
 it to the finite case by exploiting the finiteness of $M$ and $N$.
-For the case where the relations in $L$ have bounded arity,
-this is easy:
-by the boundedness of arity and finiteness of the structures,
+With loss of generality, assume the relations in $L$ have bounded arity.
+By the boundedness of arity and finiteness of the structures,
 there are a finite number of distinct relations within the structure.
 Therefore, we proceed as before but we take a finite subset of $\Diag(M)$
 with only one representative relation from each equivalence class of equivalent
@@ -117,10 +117,8 @@ then proceed in the same way as the finite case.
 
 When $L$ is infinite and its relations do not have a bounded arity,
 we will have to do something else.
-
-
-
-
+I can't think of how to do this.
+Maybe the entire approach is wrong.
 
 \section*{Question 3}
 % \subsection*{Question 1(a)}
@@ -129,13 +127,69 @@ we will have to do something else.
 \end{center}
 \subsection*{Question 3(a)}
 \begin{center}
-  \textit{Existential sentences are preserved by extension.}
+  \textit{For existential sentences $\psi$, if $N$ is a substructure of $M$ and $N \models \psi$, then $M \models \psi$.}
 \end{center}
+This is by induction on the number of existential quantifiers at the front
+of the sentence $\psi$.
+If there are no quantifiers, then we apply formula-induction on the quantifier-free $\psi$.
+Since $N$ is a substructure of $M$, the inclusion map is an embedding,
+so
+for all terms $t$ and $\bar b$ from $A_N$, $t^N[\bar b] = t^M[\bar b]$.
+This alone is sufficient for the $M \models (t_1 = t_2)[\bar b]$ case.
+For the $M \models R(t_1, \ldots, t_n)[\bar b]$ case, we also need the property that
+a homomorphism respects relations. 
+Negation, conjunction, and disjunction hold straighforwardly by induction.
+
+Now for the inductive case (of the main proof), consider a formula of the form $\exists x.\,\psi$. 
+By $N \models \exists x.\, \psi[\bar b]$, there exists $a \in A_N$
+such that $N \models \psi[\bar b \frac a x]$.
+By substructure, we also have that $a \in A_M$ and so
+$M \models \psi[\bar b \frac a x]$ and
+$M \models \exists x.\,\psi[\bar b]$,
+as required.
+  
+
 \subsection*{Question 3(b)}
 \begin{center}
-  \textit{Let $M$ and $N$ be models (of what) such that for all existential sentences, $N \models \psi$ implies $M \models \psi$.
+  \textit{Let $M$ and $N$ be models such that for all existential sentences, $N \models \psi$ implies $M \models \psi$.
   Then, there is a model $L$ such that $L$ is an extension of $N$, and $L$ is elementarily equivalent to $M$.}
 \end{center}
+We will try to show that $\Diag(N) \cup \Th(M)$ has a model.
+In this way, $\Diag(N)$ encodes the object-related properties of $N$
+(to  make $L$ extension an extension of $N$),
+and $\Th(M)$ ensures $L$ is elementarily equivalent to $M$.
+
+We will do this by compactness.
+Take an arbitrary finite subset of $\Diag(N) \cup \Th(M)$.
+By tutorial sheet 12's question 1, we can translate occurrences
+of constants in this subset (arising from $\Diag(N)$)
+with existentially-quantified variables,
+e.g. $R(c_1,c_2)$ becomes $\exists x_1.\exists x_2.\, R(x_1, x_2)$,
+and these theories are either both consistent or both inconsistent.
+These replaced sentences are now existential,
+and their construction from within $\Diag(N)$ means
+means they were satisfied by $N$, and so they are also satisfied by $M$
+due to existential preservation.
+
+Therefore, they are in fact within $\Th(M)$ and so $M$
+is a model of this translation of a finite subset of $\Diag(N) \cup \Th(M)$.
+By the tutorial's question 1 and compactness,
+this tells us there exists a model of $\Diag(N) \cup \Th(M)$.
+Call this model $L$. 
+
+Since $L \models \Diag(N)$, by Robinson's lemma,
+we have that there is an embedding of $N$ into $L$.
+This can be made into an extension by [identifying its objects with the objects of N???????].
+Additionally,
+since $L \models \Th(M)$, $L$ and $M$ must be elementarily equivalent.
+This will be all.
+
+% For each sentence in this subset originating from $\Diag(N)$,
+% translate it to a form where its constants are replaced by existential quantification,
+% This is now an existential formula, so it is satisfied by $M$ as well as $N$.
+
+
+
 \subsection*{Question 3(c)}
 \begin{center}
   \textit{Let $T$ be a first-order theory preserved under extensions. Define
@@ -143,10 +197,12 @@ we will have to do something else.
     Assume $M \models T_\exists$ and define $\Sigma = \{ \neg \psi ~|~ \psi\text{ existential and }M \nvDash \psi\}$. Then, $T \cup \Sigma$ has a model.
   }
 \end{center}
+Omitted.
 \subsection*{Question 3(d)}
 \begin{center}
-  \textit{Prove $T_\exists \models T$.}
+  \textit{Prove $T_\exists \vdash T$.}
 \end{center}
+Omitted.
 \subsection*{Question 3(e)}
 \begin{center}
   \textit{A sentence is preserved under extensions iff
