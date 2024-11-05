@@ -15,6 +15,8 @@
 \usetikzlibrary{positioning,arrows.meta,calc}
 \usetikzlibrary{angles,intersections,quotes,arrows.meta}
 
+\usepackage[linewidth=0.5pt]{mdframed}
+
 \DeclareMathOperator{\Diag}{Diag}
 \DeclareMathOperator{\Th}{Th}
 
@@ -85,40 +87,80 @@ and indeed we defined it earlier.
 \end{center}
 First, assume $L$ has only finitely many relations.
 Let $A_M$ and $A_N$ be the object sets of $M$ and $N$, resp.
-Consider the atomic diagram $\Diag(M)$.
-As $A_M$ is finite and $L$ has finitely many relations,
-the set $\Diag(M)$ is also finite.
-Let $\varphi$ be the $L(A_M)$-sentence from conjoining all
-sentences within $\Diag(M)$.
-This is an elementary formula so it also holds in $N_{A_M}$
-($N$ extended with constants from $A_M$), and so
-$N_{A_M} \models \Diag(M)$.
-By Robertson's lemma, this tells us there is an embedding of
-$M$ into $N$.
-By a symmetric argument, we can start with $\Diag(N)$ to obtain
-an embedding of $N$ into $M$.
-Since there is an embedding (injective and homomorphic) both ways, the two structures must be isomorphic.
+Let $|M|$ be the number of elements in $A_M$.
+Construct a sentence which is satisfied by a model
+iff the model has $|M|$ distinct elements. That is,
+\begin{align*}
+  \varphi_{1} &= \exists x_1.\,\cdots\exists x_{|M|}.\,
+  (x_1 \ne x_2 \wedge \cdots \wedge x_{|M|-1} \ne x_{|M|})\\
+              &\quad\wedge (\forall y.\, y = x_1 \vee \cdots\vee y = x_{|M|}).
+\end{align*}
+This means that for models,
+$\mathfrak A \models \varphi_1$ only if $|\mathfrak A| = |M|$.
+We should now obtain a sentence which records the information about
+how relations in $L$ are satisfied by $M$ and $N$.
+Let $\Diag(M)$ be the atomic diagram of $M$;
+since $M$ is finite, this is also finite.
+Conjoin all sentences in $\Diag(M)$ and make a substitution
+of existentially-quantified variables in place
+of the constant symbols from $A_M$ (i.e.,
+a constant $c_1$ is replaced with $\exists x_1$, though the existential
+quantification is shared across all uses of $x_1$).
+This formula  (call it $\varphi_2$) now looks like
+\begin{align*}
+  \varphi_2  &= 
+\exists x_1.\,\cdots\exists x_{|M|}.\,
+R_1(\cdots) \wedge \neg R_1(\cdots)\wedge R_{|L|}(\cdots) \\
+             &\quad\wedge(x_1 \ne x_2 \wedge \cdots \wedge x_{|M|-1} \ne x_{|M|})
+\end{align*}
+For each of the (finite) relations, it enumerates the (finite) 
+Cartesian product of each of the quantified variables,
+corresponding to a full specification of the relation on all possible
+valuations.
 
-For the general case where $L$ may be infinite, we seek some way to reduce
-it to the finite case by exploiting the finiteness of $M$ and $N$.
-With loss of generality, assume the relations in $L$ have bounded arity.
-By the boundedness of arity and finiteness of the structures,
-there are a finite number of distinct relations within the structure.
-Therefore, we proceed as before but we take a finite subset of $\Diag(M)$
-with only one representative relation from each equivalence class of equivalent
-relations.
-We then additionally introduce a (possibly-infinite) number of formulas
-of the form $\forall x_1,\ldots,x_n.\, (R(x_1,\ldots,x_n) \longleftrightarrow R'(x_1,\ldots,x_n))$
-for each pair of relations in each equivalence class.
-These quantified formulas, as well as the formula from a subset of $\Diag(M)$,
-are preserved in $N$ by elementary equivalence.
-We can use this to show that the full theory of $\Diag(M)$ is modelled by $N$,
-then proceed in the same way as the finite case.
+Consider the conjunction $\varphi_1 \wedge \varphi_2$.
+This is an elementary sentence.
+It is satisfied by $M$ (due to properties of $M$ and its derivation from $\Diag(M)$),
+and so it is satisfied by $N$.
+Let $y_1, \ldots, y_{|M|}$ be the objects of $N$ witnessing the existential
+(and note that $|M| = |N|$).
+Construct an isomorphism $h : M \to N$ by $c_i \mapsto y_i$ for each $i$.
+To check the relation satisfaction is identical, see that
+$R_1^M(c_1, \ldots, c_n)$
+or its negation must be in $\Diag(M)$.
+By the construction of $\varphi_2$ and elementary equivalence, this is carried over
+to the structure $N$ in terms of $y_1, \ldots, y_{|M|}$,
+and $h(c_i) = y_i$ for all $i$, so this holds.
+Also note $h$ is injective and surjective, due to $|M| = |N|$
+and the distinctiveness of $y_1, \ldots, y_{|M|}$ being guaranteed by
+$\varphi_1$.
 
-When $L$ is infinite and its relations do not have a bounded arity,
-we will have to do something else.
-I can't think of how to do this.
-Maybe the entire approach is wrong.
+Now for the infinite case where $L$
+may have infinitely-many relation.
+First, observe that the sentence $\varphi_1$
+of the previous part is still satisfied when $L$ is infinite,
+as the models themself are finite.
+Therefore, $M \models \varphi_1$ and $N \models \varphi_1$,
+so $|M| = |N|$.
+Now, proceed by contradiction.
+Assume that $M$ and $N$ are \textit{not} isomorphic.
+That is, for all bijections $h : M \to N$,
+there is a relation $R$ such that
+$R^M(c_1, \ldots, c_n)$ but not $R^N(y_1, \ldots, y_n)$
+where $c_i$ and $y_i$ are related by the bijection ($h(c_i) = y_i$ for all $i$).
+[....................]
+
+\begin{mdframed}
+  For each bijection $f_i : M \to N$ (of which there are $|M|!$ many),
+  obtain a relation $R_i$ which differs at some valuation.
+  Construct a language $L_0 \subseteq L$ with only these $\{R_i\}$
+  symbols.
+  The restrictions of $M$ and $N$ to $L_0$ are still elementarily-equivalent,
+  so we invoke the finite case on $L_0$ which tells us that these
+  substructures of $M$ and $N$ are isomorphic.
+  However, 
+\end{mdframed}
+
 
 \section*{Question 3}
 % \subsection*{Question 1(a)}
@@ -193,16 +235,50 @@ This will be all.
 \subsection*{Question 3(c)}
 \begin{center}
   \textit{Let $T$ be a first-order theory preserved under extensions. Define
-    $T_\exists = \{\psi ~|~ \psi\text{ existential and } T \vdash \phi\}$.
+    $T_\exists = \{\psi ~|~ \psi\text{ existential and } T \vdash \psi\}$.
     Assume $M \models T_\exists$ and define $\Sigma = \{ \neg \psi ~|~ \psi\text{ existential and }M \nvDash \psi\}$. Then, $T \cup \Sigma$ has a model.
   }
 \end{center}
-Omitted.
+$T_\exists$ is the set of all existential sentences provable by the model $T$,
+where $T$ is preserved under extensions.
+$\Sigma$ is every existential unsatisfied by $M$,
+where $M$ is a model of $T_\exists$.
+Preserved under extension: if a structure models $T$, so does
+all extensions of it.
+
+Compactness. Take any finite subset of $T \cup \Sigma$.
+We have that $M$ satisfies every existential which is proven by $T$. 
+
+
+
+
 \subsection*{Question 3(d)}
 \begin{center}
   \textit{Prove $T_\exists \vdash T$.}
 \end{center}
-Omitted.
+\begin{mdframed}
+  This question combines (c) and (b)
+  to show that the theory $T_\exists$
+  (of only positive existential statements)
+  is enough to prove
+  all of $T$.
+
+  Let $M_\exists$ be a model of $T_\exists$. Let $M_\Sigma$ be a model of $T \cup \Sigma$ as in (c).
+  Note that $M_\Sigma \models T$.
+  If $M_\Sigma \models \psi$ existential,
+  then $\neg \psi \notin \Sigma$ (otherwise inconsistent)
+  Thus, $M_\exists \models \psi$ (because it must have come from $T$?).
+  Therefore, $M_\Sigma \models \psi$ existential implies $M_\exists \models \psi$.
+
+  By (b), there is a structure $L$ where $L$ is elementarily-equivalent to $M_\exists$
+  and $L$ is an extension of $M_\Sigma$.
+  Now, $M_\Sigma \models T$ and $T$ is preserved by extensions, so $L \models T$.
+  Moreover, since $L$ is elementary-equivalent to $M_\exists$,
+  we have $M_\exists \models T$.
+
+
+\end{mdframed}
+
 \subsection*{Question 3(e)}
 \begin{center}
   \textit{A sentence is preserved under extensions iff
